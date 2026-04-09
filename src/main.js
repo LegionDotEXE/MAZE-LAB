@@ -1,5 +1,5 @@
 // Main.Js
-
+//Hello test test
 /*
 * Incremental Maze Game 
 * CMPM 170
@@ -33,7 +33,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [
-    MiniGame
+    Load, MiniGame, Shop
   ]
 };
 
