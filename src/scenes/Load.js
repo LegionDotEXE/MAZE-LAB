@@ -5,11 +5,10 @@ class Load extends Phaser.Scene{
 
     preload(){
       
-        
     }
 
     create(){
-
+        this.scene.start('ShopScene')
     }
 
 }
