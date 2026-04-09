@@ -40,7 +40,7 @@ class Shop extends Phaser.Scene {
         // This creates a container to hold all shop UI elements
         this.shopContainer = this.add.container(0, 0)
 
-
+        //This will most likely be replaced with a custom sprite but for now we can just use shapes to make a phone UI
         // Main phone body 
         const body = this.add.rectangle(phoneX, phoneY, 260, 440, 0x111111)
             .setStrokeStyle(4, 0x777777)
@@ -79,6 +79,7 @@ class Shop extends Phaser.Scene {
         // Shop buttons
         this.shopButtons = []
 
+        //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
             { label: "Upgrade 1", x: phoneX - 55, y: phoneY - 50 },
             { label: "Upgrade 2", x: phoneX + 55, y: phoneY - 50 },
@@ -111,7 +112,7 @@ class Shop extends Phaser.Scene {
 
         //Okay this was somewhat new to me but a container is really OP, it works kinda like an 
         //empty game object from unity in which everything inside it will be affected by changes to the container 
-        // itself. The really weird looking part is at the bottom that uses flatMaps and the spread operator(...).
+        //itself. The really weird looking part is at the bottom that uses flatMaps and the spread operator(...).
         //Basically flatMap builds a list of all buttons and labels
         //... injects them into the main array
         //container.add() groups them all into one UI object
@@ -141,7 +142,7 @@ class Shop extends Phaser.Scene {
             scaleX: 1,
             scaleY: 1,
             duration: 200,
-            ease: "Back.Out"
+            ease: "Cubic.easeInOut"
         })
     }
 
@@ -154,7 +155,7 @@ class Shop extends Phaser.Scene {
             scaleX: 0,
             scaleY: 0,
             duration: 150,
-            ease: "Back.In",
+            ease: "Cubic.easeInOut",
             onComplete: () => {
                 this.shopContainer.setVisible(false)
                 this.closedPhone.setVisible(true)
@@ -162,6 +163,9 @@ class Shop extends Phaser.Scene {
         })
     }
 
+    //We can use this function to handle the logic for buying items
+    //for now it just changes the button color and text but we can easily expand 
+    //this so that it spawns the drugs or whatever we want to add to the game when an item is bought
     buyItem(index) {
         const item = this.shopButtons[index]
 
