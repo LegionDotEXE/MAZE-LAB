@@ -4,24 +4,26 @@
 class MiniGame extends Phaser.Scene {
   constructor() {
     super('MiniGame');
-    this.health = 0;
+    this.health = 0; // When game manager is implemented this will be set there maybe - Robert
   }
 
-create() {  const button = this.add.circle(600, 300, 50, 0xff0000);
+  create() {  
+  
+    const button = this.add.circle(600, 300, 50, 0xff0000);
 
-button.setInteractive();
+    button.setInteractive();
 
-button.on('pointerdown', () => {
-    this.health += 1;
-    console.log(`Health: ${this.health}`);
-});
+    button.on('pointerdown', () => {
+      this.health += 1;
+      console.log(`Health: ${this.health}`);
+    });
 
-button.on('pointerover', () => {
-    button.setFillStyle(0xcc0000);
-});
+    button.on('pointerover', () => {
+      button.setFillStyle(0xcc0000);
+    });
 
-button.on('pointerout', () => {
-    button.setFillStyle(0xff0000);
-});}
-
+    button.on('pointerout', () => {
+      button.setFillStyle(0xff0000);
+    });
+  }
 };
