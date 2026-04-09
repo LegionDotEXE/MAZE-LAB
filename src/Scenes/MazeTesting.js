@@ -9,12 +9,12 @@ class MazeTesting extends Phaser.Scene {
     init() {
         this.TILESIZE = 16;
         this.SCALE = 2.0;
+        // below is the size of the tilemap in tiles
         this.TILEWIDTH = 18;
         this.TILEHEIGHT = 18;
     }
 
     create() {
-        // Create a new tilemap which uses 16x16 tiles, and is 18 tiles wide and 8tiles tall
         this.map = this.add.tilemap("TestingMaze", this.TILESIZE, this.TILESIZE, this.TILEHEIGHT, this.TILEWIDTH);
 
         // Add a tileset to the map
@@ -33,7 +33,8 @@ class MazeTesting extends Phaser.Scene {
         // Create grid of visible tiles for use with path planning
         let tinyTownGrid = this.layersToGrid([this.groundLayer, this.wallLayer]);
 
-        let walkables = [0];
+        //A tile with the cost value of 1 is walkable; Walls are cost 0 
+        let walkables = [1];
 
         // Initialize EasyStar pathfinder
         this.finder = new EasyStar.js();
