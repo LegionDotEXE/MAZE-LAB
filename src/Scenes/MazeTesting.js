@@ -1,6 +1,6 @@
-class Pathfinder extends Phaser.Scene {
+class MazeTesting extends Phaser.Scene {
     constructor() {
-        super("MazeTesting");
+        super("mazetestingscene");
     }
 
     preload() {
@@ -18,37 +18,32 @@ class Pathfinder extends Phaser.Scene {
         this.map = this.add.tilemap("TestingMaze", this.TILESIZE, this.TILESIZE, this.TILEHEIGHT, this.TILEWIDTH);
 
         // Add a tileset to the map
-        this.tileset = this.map.addTilesetImage("kenney-tiny-town", "tilemap_tiles");
+        this.tileset = this.map.addTilesetImage("TESTING TILESET FOR MAZE", "maze_tiles");
 
         // Create the layers
         this.groundLayer = this.map.createLayer("Ground", this.tileset, 0, 0);
         this.wallLayer = this.map.createLayer("MazeWalls", this.tileset, 0, 0);
-
-        // Create townsfolk sprite
-        // Use setOrigin() to ensure the tile space computations work well
-        my.sprite.purpleTownie = this.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0);
+        
+        //my.sprite.purpleTownie = this.add.sprite(this.tileXtoWorld(5), this.tileYtoWorld(5), "purple").setOrigin(0,0);
         
         // Camera settings
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.setZoom(this.SCALE);
 
         // Create grid of visible tiles for use with path planning
-        let tinyTownGrid = this.layersToGrid([this.groundLayer, this.treesLayer, this.housesLayer]);
+        let tinyTownGrid = this.layersToGrid([this.groundLayer, this.wallLayer]);
 
-        let walkables = [1, 2, 3, 30, 40, 41, 42, 43, 44, 95, 13, 14, 15, 25, 26, 27, 37, 38, 39, 70, 84];
+        let walkables = [0];
 
         // Initialize EasyStar pathfinder
         this.finder = new EasyStar.js();
 
-        // Pass grid information to EasyStar
-        // EasyStar doesn't natively understand what is currently on-screen,
-        // so, you need to provide it that information
         this.finder.setGrid(tinyTownGrid);
 
         // Tell EasyStar which tiles can be walked on
         this.finder.setAcceptableTiles(walkables);
 
-        this.activeCharacter = my.sprite.purpleTownie;
+        //this.activeCharacter = my.sprite.purpleTownie;
 
         // Handle mouse clicks
         // Handles the clicks on the map to make the character move
@@ -56,23 +51,10 @@ class Pathfinder extends Phaser.Scene {
         // function this.handleClick()
         this.input.on('pointerup',this.handleClick, this);
 
-        this.cKey = this.input.keyboard.addKey('C');
-        this.lowCost = false;
-
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
-            if (!this.lowCost) {
-                // Make the path low cost with respect to grassy areas
-                this.setCost(this.tileset);
-                this.lowCost = true;
-            } else {
-                // Restore everything to same cost
-                this.resetCost(this.tileset);
-                this.lowCost = false;
-            }
-        }
+       
     }
 
     resetCost(tileset) {

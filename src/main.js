@@ -34,7 +34,8 @@ const config = {
   },
   scene: [
     //Load //IGNORING Load FOR NOW
-    MazeLoad //loading MazeLoad primarily for testing purposes only
+    MazeLoad, //loading MazeLoad primarily for testing purposes only
+    MazeTesting
   ]
 };
 

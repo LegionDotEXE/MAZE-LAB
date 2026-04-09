@@ -1,4 +1,4 @@
-class Load extends Phaser.Scene {
+class MazeLoad extends Phaser.Scene {
     constructor() {
         super("mazeloadscene");
     }
@@ -10,17 +10,11 @@ class Load extends Phaser.Scene {
 
         // Load tilemap information
         this.load.image("maze_tiles", "tileset_full.png");  //tileset
-        this.load.tilemapTiledJSON("TestingMaze", "Testing Maze.tmh");   // JSON (tmj) tilemap
+        this.load.tilemapTiledJSON("TestingMaze", "TestingMaze.tmj");   // JSON (tmj) tilemap
     }
 
     create() {
-        
-
-         // ...and pass to the next Scene
-         this.scene.start("MazeTesting");
-    }
-
-    // Never get here since a new scene is started in create()
-    update() {
+         // go to next scene after loading assets
+         this.scene.start("mazetestingscene");
     }
 }
