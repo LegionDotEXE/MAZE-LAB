@@ -58,6 +58,77 @@ class HealthBar {
 
 }
 
+class HealthBar {
+    constructor (scene, x, y)
+    {
+        this.bar = new Phaser.GameObjects.Graphics(scene);
+
+        this.x = x;
+        this.y = y;
+        this.value = 100;
+        this.maxHealthbarSize = 246; 
+        this.p = this.maxHealthbarSize / 100;
+
+        this.draw();
+
+        scene.add.existing(this.bar);
+    }
+
+    decrease (amount)
+    {
+        this.value -= amount;
+
+        if (this.value < 0)
+        {
+            this.value = 0;
+        }
+
+        this.draw();
+
+        return (this.value === 0);
+    }
+    //increase amount for button - taylor
+    increase(amount)
+    {
+    this.value += amount;
+
+    if (this.value > 100)
+    {
+        this.value = 100;
+    }
+
+    this.draw();
+    }
+
+    draw ()
+    {
+        this.bar.clear();
+
+        //  BG
+        this.bar.fillStyle(0x000000);
+        this.bar.fillRect(this.x, this.y, 250, 16);
+
+        //  Health
+
+        this.bar.fillStyle(0xffffff);
+        this.bar.fillRect(this.x + 2, this.y + 2, this.maxHealthbarSize, 12);
+
+        if (this.value < 30)
+        {
+            this.bar.fillStyle(0xff0000);
+        }
+        else
+        {
+            this.bar.fillStyle(0x00ff00);
+        }
+
+        var d = Math.floor(this.p * this.value);
+
+        this.bar.fillRect(this.x + 2, this.y + 2, d, 12);
+    }
+
+}
+
 class Maze extends Phaser.Scene {
     constructor() {
         super("mazeScene");
@@ -122,7 +193,7 @@ class Maze extends Phaser.Scene {
         this.startingLocation2 = { x: this.tileXtoWorld(10), y: this.tileYtoWorld(13) }
 
         // create lobster sprite
-        my.sprite.lobster = new Animal(this, this.startingLocation2.x, this.startingLocation2.y, "Lobster", null, this.map).setOrigin(0, 0);
+        my.sprite.lobster = new Animal(this, this.startingLocation.x, this.startingLocation.y, "Lobster", null, this.map).setOrigin(0, 0);
 
         this.activeCharacter = my.sprite.lobster;
 
@@ -146,8 +217,8 @@ class Maze extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
-
     }
+
 
     update() {
     }
