@@ -10,22 +10,25 @@ class MiniGame extends Phaser.Scene {
 
   create() {  
     this.Maze = game.scene.getScene('mazeScene');
-    const button = this.add.circle(700, 300, 50, 0xff0000);
+    this.button = this.add.sprite(700, 300, 'buttonUp').setInteractive();
 
-    button.setInteractive();
-
-    button.on('pointerdown', () => {
+    this.button.on('pointerdown', () => {
       this.gameManager.battery += 1; // Example of how to interact with GameManager's battery stat
       this.Maze.HP.increase(1);
       console.log(`Battery: ${ this.gameManager.battery}`);
+       this.button.setTexture('buttonDown');
     });
 
-    button.on('pointerover', () => {
-      button.setFillStyle(0xcc0000);
+    this.button.on('pointerup', () => {
+      this.button.setTexture('buttonUp');
+    });
+    
+    this.button.on('pointerover', () => {
+      
     });
 
-    button.on('pointerout', () => {
-      button.setFillStyle(0xff0000);
+    this.button.on('pointerout', () => {
+      this.button.setTexture('buttonUp');
     });
   }
 
