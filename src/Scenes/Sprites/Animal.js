@@ -22,10 +22,6 @@ class ThinkingState extends State {
             character.statemachine.transition("Moving");
         }, null, this);
     }
-
-    execute(character) {
-
-    }
 }
 
 class Animal extends Phaser.Physics.Arcade.Sprite {
@@ -35,7 +31,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.speed = 200;
         this.completeMoney = 100;
         this.thinkingTime = 2000; //10 seconds
-        //this.Path = path;
+
         this.mapref = map;
         this.ignoreTile = false;
 
@@ -60,7 +56,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             movementTweens.push({
                 x: ex * this.mapref.tileWidth,
                 y: ey * this.mapref.tileHeight,
-                duration: 200
+                duration: this.speed
             });
         }
         this.activeTweens = this.scene.tweens.chain({

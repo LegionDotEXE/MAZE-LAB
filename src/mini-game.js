@@ -4,22 +4,20 @@
 class MiniGame extends Phaser.Scene {
   constructor() {
     super('MiniGame');
-
-    this.health = 0; // When game manager is implemented this will be set there maybe - Robert
-    //reference the game manager so we can interact with it - Robert
     this.gameManager = game.scene.getScene('GameManager');
+    
   }
 
   create() {  
-  
-    const button = this.add.circle(600, 300, 50, 0xff0000);
+    this.Maze = game.scene.getScene('mazeScene');
+    const button = this.add.circle(700, 300, 50, 0xff0000);
 
     button.setInteractive();
 
     button.on('pointerdown', () => {
-      this.health += 1; 
-      this.gameManager.battery -= 10; // Example of how to interact with GameManager's battery stat
-      console.log(`Health: ${ this.gameManager.battery}`);
+      this.gameManager.battery += 1; // Example of how to interact with GameManager's battery stat
+      this.Maze.HP.increase(1);
+      console.log(`Battery: ${ this.gameManager.battery}`);
     });
 
     button.on('pointerover', () => {
