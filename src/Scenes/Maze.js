@@ -29,6 +29,18 @@ class HealthBar {
 
         return (this.value === 0);
     }
+    //increase amount for button - taylor
+    increase(amount)
+    {
+    this.value += amount;
+
+    if (this.value > 100)
+    {
+        this.value = 100;
+    }
+
+    this.draw();
+    }
 
     draw ()
     {
@@ -132,7 +144,21 @@ class Maze extends Phaser.Scene {
 
         this.HP = new HealthBar(this, this.startingLocation.x + 5, this.startingLocation.y + 135);
 
+        // health bar goes down over time - taylor
+        this.healthDeplete = this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+                const isEmpty = this.HP.decrease(1);
+                if (isEmpty) {
+                    this.healthDeplete.remove(false);
+                    // add black screen or whatever else here when lobster dies
+                }
+            },
+            callbackScope: this,
+            loop: true
+        });
     }
+
 
     update() {
     }
