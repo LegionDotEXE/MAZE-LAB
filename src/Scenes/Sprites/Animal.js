@@ -4,7 +4,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 
 
         this.speed = 600;
-        this.completeMoney = 100;
+        this.completeMoney = 1;
         this.thinkingTime = 4000;
         //this.Path = path;
         this.mapref = map;
