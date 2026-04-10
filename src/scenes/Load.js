@@ -4,7 +4,10 @@ class Load extends Phaser.Scene{
     }
 
     preload(){
-      this.load.setPath("./assets/");
+        this.load.setPath("./assets/");
+
+        this.load.image('background', './images/BackgroundV1.png');
+        
 
         // lobster sprite
         this.load.image("Lobster", "Lobster16.png");
