@@ -79,10 +79,6 @@ class ThinkingState extends State {
             character.statemachine.transition("Moving");
         }, null, this);
     }
-
-    execute(character) {
-
-    }
 }
 
 // drug state classes

@@ -16,7 +16,7 @@ class Load extends Phaser.Scene{
 
         // Load tilemap information
         this.load.image("maze_tiles", "tileset_full.png");  //tileset
-        this.load.tilemapTiledJSON("TestingMaze", "TestingMaze.tmj");   // JSON (tmj) tilemap
+        this.load.tilemapTiledJSON("TestingMaze", "Maze.tmj");   // JSON (tmj) tilemap
     }
 
     create(){

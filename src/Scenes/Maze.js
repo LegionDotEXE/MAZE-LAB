@@ -81,10 +81,10 @@ class Maze extends Phaser.Scene {
 
     init() {
         this.TILESIZE = 16;
-        this.SCALE = 2.0;
+        this.SCALE = 1.25;
         // below is the size of the tilemap in tiles
-        this.TILEWIDTH = 18;
-        this.TILEHEIGHT = 18;
+        this.TILEWIDTH = 16;
+        this.TILEHEIGHT = 16;
     }
 
     create() {
@@ -132,9 +132,10 @@ class Maze extends Phaser.Scene {
         })
 
         this.startingLocation = { x: this.tileXtoWorld(1), y: this.tileYtoWorld(10) }
+        this.startingLocation2 = { x: this.tileXtoWorld(10), y: this.tileYtoWorld(13) }
 
         // create lobster sprite
-        my.sprite.lobster = new Animal(this, this.startingLocation.x, this.startingLocation.y, "Lobster", null, this.map).setOrigin(0, 0);
+        my.sprite.lobster = new Animal(this, this.startingLocation2.x, this.startingLocation2.y, "Lobster", null, this.map).setOrigin(0, 0);
 
         this.activeCharacter = my.sprite.lobster;
 
@@ -142,7 +143,8 @@ class Maze extends Phaser.Scene {
 
         this.initiatePath(); //start animal pathfinding and movement
 
-        this.HP = new HealthBar(this, this.startingLocation.x + 5, this.startingLocation.y + 135);
+        //Health bar spawns using lobster spawn location as basis (will change)
+        this.HP = new HealthBar(this, this.startingLocation.x + 18.5, this.startingLocation.y - 105);
 
         // health bar goes down over time - taylor
         this.healthDeplete = this.time.addEvent({
@@ -173,16 +175,12 @@ class Maze extends Phaser.Scene {
 
     layersToGrid(arr) {
         let grid = [];
-
-
         for (let y = 0; y < this.map.height; y++) {
             grid[y] = [];
             for (let x = 0; x < this.map.width; x++) {
                 grid[y][x] = -1;
             }
         }
-
-
         for (let i = 0; i < arr.length; i++) {
             for (let y = 0; y < this.map.height; y++) {
                 for (let x = 0; x < this.map.width; x++) {
@@ -193,11 +191,10 @@ class Maze extends Phaser.Scene {
                 }
             }
         }
-        // Loop over layers to find tile IDs, store in grid
-        // TODO: write this loop
         return grid;
     }
 
+    //Selects one of the goals at random whenever this function is called
     chooseGoal() {
         let goalNum = Math.floor(Math.random() * this.pointMap.size)
         let Goal = {
@@ -208,6 +205,7 @@ class Maze extends Phaser.Scene {
         return Goal
     }
 
+    //Finds a path and then immediately lets the animal start moving
     initiatePath() {
         let Goal = this.chooseGoal();
         var fromX = Math.floor(this.activeCharacter.x / this.TILESIZE);
@@ -220,7 +218,7 @@ class Maze extends Phaser.Scene {
             if (path === null) {
                 console.warn("Path was not found.");
             } else {
-                console.log(path);
+                //console.log(path);
                 this.activeCharacter.statemachine.transition("Moving", path);
             }
         });
@@ -232,8 +230,8 @@ class Maze extends Phaser.Scene {
         if (tile.properties.GOAL) {
             console.log("reached goal");
             //resets to starting location
-            player.x = this.startingLocation.x;
-            player.y = this.startingLocation.y;
+            player.x = this.startingLocation2.x;
+            player.y = this.startingLocation2.y;
             //sets a new goal
             this.initiatePath();
             //prevents multiple tweens from occuring (no buggy looking movement)
@@ -246,7 +244,7 @@ class Maze extends Phaser.Scene {
                 this.activeCharacter.statemachine.transition("Thinking");
                 //thinking tiles turn themselves off for the characters thinking time + 1.5s in order to prevent the lobster 
                 //from being stuck thinking on the same tile for so long
-                this.time.delayedCall((this.activeCharacter.thinkingTime + 1500), () => { 
+                this.time.delayedCall((this.activeCharacter.thinkingTime + 2000), () => { 
                     tile.properties.THINKING = true;
                 }, null, this);
             }
