@@ -25,6 +25,8 @@ class Load extends Phaser.Scene{
         this.scene.launch('mazeScene')
         this.scene.launch('MiniGame')
         this.scene.launch('ShopScene')
+
+        this.scene.moveBelow('ShopScene', 'mazeScene') //moves the maze scene to be below the shop scene
     }
 
 }
