@@ -1,5 +1,64 @@
 //LLMs were used for a few function, view the chat log here: https://gemini.google.com/share/fe7fd7289a33
 
+class HealthBar {
+    constructor (scene, x, y)
+    {
+        this.bar = new Phaser.GameObjects.Graphics(scene);
+
+        this.x = x;
+        this.y = y;
+        this.value = 100;
+        this.maxHealthbarSize = 246; 
+        this.p = this.maxHealthbarSize / 100;
+
+        this.draw();
+
+        scene.add.existing(this.bar);
+    }
+
+    decrease (amount)
+    {
+        this.value -= amount;
+
+        if (this.value < 0)
+        {
+            this.value = 0;
+        }
+
+        this.draw();
+
+        return (this.value === 0);
+    }
+
+    draw ()
+    {
+        this.bar.clear();
+
+        //  BG
+        this.bar.fillStyle(0x000000);
+        this.bar.fillRect(this.x, this.y, 250, 16);
+
+        //  Health
+
+        this.bar.fillStyle(0xffffff);
+        this.bar.fillRect(this.x + 2, this.y + 2, this.maxHealthbarSize, 12);
+
+        if (this.value < 30)
+        {
+            this.bar.fillStyle(0xff0000);
+        }
+        else
+        {
+            this.bar.fillStyle(0x00ff00);
+        }
+
+        var d = Math.floor(this.p * this.value);
+
+        this.bar.fillRect(this.x + 2, this.y + 2, d, 12);
+    }
+
+}
+
 class Maze extends Phaser.Scene {
     constructor() {
         super("mazeScene");
@@ -14,11 +73,6 @@ class Maze extends Phaser.Scene {
         // below is the size of the tilemap in tiles
         this.TILEWIDTH = 18;
         this.TILEHEIGHT = 18;
-    }
-
-    //Created by AI VVVVVV
-    wait(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     create() {
@@ -45,7 +99,6 @@ class Maze extends Phaser.Scene {
 
         // Initialize EasyStar pathfinder
         this.finder = new EasyStar.js();
-
         this.finder.setGrid(tinyTownGrid);
 
         // Tell EasyStar which tiles can be walked on
@@ -68,29 +121,21 @@ class Maze extends Phaser.Scene {
 
         this.startingLocation = { x: this.tileXtoWorld(1), y: this.tileYtoWorld(10) }
 
+        // create lobster sprite
         my.sprite.lobster = new Animal(this, this.startingLocation.x, this.startingLocation.y, "Lobster", null, this.map).setOrigin(0, 0);
-        //this.physics.add.sprite(this.startingLocation.x, this.startingLocation.y, "Lobster").setOrigin(0, 0);
 
         this.activeCharacter = my.sprite.lobster;
 
         this.physics.add.overlap(this.activeCharacter, this.groundLayer, this.TileEffecthandler, null, this);
 
-        //this.input.on('pointerup', this.handleClick, this);
-
-        //prolly replace these with state machines
-        this.isMoving = false;
-        this.isThinking = false;
-
-        //this.Goal = this.chooseGoal();
-
         this.initiatePath(); //start animal pathfinding and movement
+
+        this.HP = new HealthBar(this, this.startingLocation.x + 5, this.startingLocation.y + 135);
 
     }
 
     update() {
-
     }
-
 
     tileXtoWorld(tileX) {
         return tileX * this.TILESIZE;
@@ -122,10 +167,8 @@ class Maze extends Phaser.Scene {
                 }
             }
         }
-
         // Loop over layers to find tile IDs, store in grid
         // TODO: write this loop
-
         return grid;
     }
 
