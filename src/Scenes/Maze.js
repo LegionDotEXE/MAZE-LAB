@@ -2,12 +2,14 @@
 class HealthBar {
     constructor(scene, x, y) {
         this.bar = new Phaser.GameObjects.Graphics(scene);
+        this.gameManager = game.scene.getScene('GameManager');
 
         this.x = x;
         this.y = y;
-        this.value = 100;
+        this.value = this.gameManager.battery;
         this.maxHealthbarSize = 246;
         this.p = this.maxHealthbarSize / 100;
+
 
         this.draw();
 
@@ -16,6 +18,7 @@ class HealthBar {
 
     decrease(amount) {
         this.value -= amount;
+        this.gameManager.battery -= amount;
 
         if (this.value < 0) {
             this.value = 0;
