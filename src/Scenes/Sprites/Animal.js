@@ -3,7 +3,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture, frame);
 
 
-        this.speed = 100;
+        this.speed = 600;
         this.completeMoney = 100;
         this.thinkingTime = 4000;
         //this.Path = path;
@@ -43,7 +43,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             movementTweens.push({
                 x: ex * this.mapref.tileWidth,
                 y: ey * this.mapref.tileHeight,
-                duration: 200
+                duration: this.speed
             });
         }
         this.activeTweens = this.scene.tweens.chain({
