@@ -4,7 +4,14 @@ class Load extends Phaser.Scene{
     }
 
     preload(){
-      
+      this.load.setPath("./assets/");
+
+        // lobster sprite
+        this.load.image("Lobster", "Lobster16.png");
+
+        // Load tilemap information
+        this.load.image("maze_tiles", "tileset_full.png");  //tileset
+        this.load.tilemapTiledJSON("TestingMaze", "TestingMaze.tmj");   // JSON (tmj) tilemap
     }
 
     create(){
@@ -12,6 +19,7 @@ class Load extends Phaser.Scene{
         this.scene.launch('GameManager')
         this.scene.launch('ShopScene')
         this.scene.launch('MiniGame')
+        this.scene.launch('mazeScene')
     }
 
 }

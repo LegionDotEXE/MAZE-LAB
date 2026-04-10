@@ -1,8 +1,8 @@
 //LLMs were used for a few function, view the chat log here: https://gemini.google.com/share/fe7fd7289a33
 
-class MazeTesting extends Phaser.Scene {
+class Maze extends Phaser.Scene {
     constructor() {
-        super("mazetestingscene");
+        super("mazeScene");
     }
 
     preload() {
