@@ -8,6 +8,6 @@ class GameManager extends Phaser.Scene {
     }
 
     create(){
-
+        this.add.sprite(0, 0, 'background').setOrigin(0, 0).setDepth(-1);
     }
 }
