@@ -1,14 +1,13 @@
 //LLMs were used for a few function, view the chat log here: https://gemini.google.com/share/fe7fd7289a33
 
 class HealthBar {
-    constructor (scene, x, y)
-    {
+    constructor(scene, x, y) {
         this.bar = new Phaser.GameObjects.Graphics(scene);
 
         this.x = x;
         this.y = y;
         this.value = 100;
-        this.maxHealthbarSize = 246; 
+        this.maxHealthbarSize = 246;
         this.p = this.maxHealthbarSize / 100;
 
         this.draw();
@@ -16,12 +15,10 @@ class HealthBar {
         scene.add.existing(this.bar);
     }
 
-    decrease (amount)
-    {
+    decrease(amount) {
         this.value -= amount;
 
-        if (this.value < 0)
-        {
+        if (this.value < 0) {
             this.value = 0;
         }
 
@@ -30,20 +27,17 @@ class HealthBar {
         return (this.value === 0);
     }
     //increase amount for button - taylor
-    increase(amount)
-    {
-    this.value += amount;
+    increase(amount) {
+        this.value += amount;
 
-    if (this.value > 100)
-    {
-        this.value = 100;
+        if (this.value > 100) {
+            this.value = 100;
+        }
+
+        this.draw();
     }
 
-    this.draw();
-    }
-
-    draw ()
-    {
+    draw() {
         this.bar.clear();
 
         //  BG
@@ -55,12 +49,10 @@ class HealthBar {
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(this.x + 2, this.y + 2, this.maxHealthbarSize, 12);
 
-        if (this.value < 30)
-        {
+        if (this.value < 30) {
             this.bar.fillStyle(0xff0000);
         }
-        else
-        {
+        else {
             this.bar.fillStyle(0x00ff00);
         }
 
@@ -85,6 +77,7 @@ class Maze extends Phaser.Scene {
         // below is the size of the tilemap in tiles
         this.TILEWIDTH = 16;
         this.TILEHEIGHT = 16;
+        this.gameManager = game.scene.getScene('GameManager');
     }
 
     create() {
@@ -225,17 +218,23 @@ class Maze extends Phaser.Scene {
         this.finder.calculate();
     }
 
+    resetCharacter(player) {
+        player.x = this.startingLocation2.x;
+        player.y = this.startingLocation2.y;
+        //sets a new goal
+        this.initiatePath();
+        //prevents multiple tweens from occuring (no buggy looking movement)
+        this.activeCharacter.activeTweens.stop();
+    }
+
     //pulled from past project
     async TileEffecthandler(player, tile) {
         if (tile.properties.GOAL) {
             console.log("reached goal");
+            this.gameManager.money += this.activeCharacter.completeMoney;
+            console.log(this.gameManager.money);
             //resets to starting location
-            player.x = this.startingLocation2.x;
-            player.y = this.startingLocation2.y;
-            //sets a new goal
-            this.initiatePath();
-            //prevents multiple tweens from occuring (no buggy looking movement)
-            this.activeCharacter.activeTweens.stop();
+            this.resetCharacter(player)
         }
 
         if (tile.properties.THINKING) {
@@ -244,7 +243,7 @@ class Maze extends Phaser.Scene {
                 this.activeCharacter.statemachine.transition("Thinking");
                 //thinking tiles turn themselves off for the characters thinking time + 1.5s in order to prevent the lobster 
                 //from being stuck thinking on the same tile for so long
-                this.time.delayedCall((this.activeCharacter.thinkingTime + 2000), () => { 
+                this.time.delayedCall((this.activeCharacter.thinkingTime + 2000), () => {
                     tile.properties.THINKING = true;
                 }, null, this);
             }
