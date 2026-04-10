@@ -172,8 +172,14 @@ class MazeTesting extends Phaser.Scene {
         }
 
         if (tile.properties.THINKING) {
-            if (this.activeCharacter.statemachine.state === "Moving"){
+            if (this.activeCharacter.statemachine.state === "Moving") {
+                tile.properties.THINKING = false;
                 this.activeCharacter.statemachine.transition("Thinking");
+                //thinking tiles turn themselves off for the characters thinking time + 1.5s in order to prevent the lobster 
+                //from being stuck thinking on the same tile for so long
+                this.time.delayedCall((this.activeCharacter.thinkingTime + 1500), () => { 
+                    tile.properties.THINKING = true;
+                }, null, this);
             }
         }
     }

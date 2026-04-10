@@ -33,9 +33,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [
-    //Load //IGNORING Load FOR NOW
-    MazeLoad, //loading MazeLoad primarily for testing purposes only
-    MazeTesting
+    Load, GameManager, MiniGame, Shop, MazeLoad, MazeTesting
   ]
 };
 

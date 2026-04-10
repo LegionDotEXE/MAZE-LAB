@@ -19,12 +19,12 @@ class ThinkingState extends State {
             character.activeTweens.pause();
         }
         character.scene.time.delayedCall(character.thinkingTime, () => {
-           character.statemachine.transition("Moving");
+            character.statemachine.transition("Moving");
         }, null, this);
     }
 
     execute(character) {
-    
+
     }
 }
 
@@ -37,6 +37,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.thinkingTime = 2000; //10 seconds
         //this.Path = path;
         this.mapref = map;
+        this.ignoreTile = false;
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
