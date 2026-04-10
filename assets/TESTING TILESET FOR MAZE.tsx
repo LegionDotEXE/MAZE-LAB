@@ -38,6 +38,7 @@
  </tile>
  <tile id="35">
   <properties>
+   <property name="GOAL" type="bool" value="true"/>
    <property name="cost" type="int" value="999"/>
   </properties>
  </tile>

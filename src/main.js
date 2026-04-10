@@ -25,7 +25,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },        // Top-down architecture, as planned
-      debug: false
+      debug: true
     }
   },
   scale: {
@@ -38,6 +38,8 @@ const config = {
     MazeTesting
   ]
 };
+
+var my = {sprite: {}}; //grabbed from my 120 class
 
 const game = new Phaser.Game(config);
 console.log("Unethical Lab initialized.");

@@ -6,7 +6,8 @@ class MazeLoad extends Phaser.Scene {
     preload() {
         this.load.setPath("./assets/");
 
-       
+        // lobster sprite
+        this.load.image("Lobster", "Lobster16.png");
 
         // Load tilemap information
         this.load.image("maze_tiles", "tileset_full.png");  //tileset
