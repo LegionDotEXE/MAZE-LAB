@@ -9,7 +9,8 @@ class Load extends Phaser.Scene{
     }
 
     create(){
-
+        //this.add.text(20, 20, "Load Scene", { font: "16px Arial", fill: "#ffffff" });
+        this.scene.start("MainUI");
     }
 
 }
