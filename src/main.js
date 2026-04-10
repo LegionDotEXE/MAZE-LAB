@@ -17,15 +17,15 @@
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1280,
+  height: 720,
   backgroundColor: '#1a1a24',
   pixelArt: true,           
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },        // Top-down architecture, as planned
-      debug: false
+      debug: true
     }
   },
   scale: {
@@ -33,9 +33,11 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [
-    Load, GameManager, MiniGame, Shop
+    Load, GameManager, MiniGame, Shop, Maze
   ]
 };
+
+var my = {sprite: {}}; //grabbed from my 120 class
 
 const game = new Phaser.Game(config);
 console.log("Unethical Lab initialized.");
