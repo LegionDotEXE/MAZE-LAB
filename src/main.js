@@ -36,9 +36,9 @@ const config = {
   scene: [
     Load,
     GameManager,
-    MiniGame,
+    mini-game,
     Shop,
-    Maze
+    Maze,
   ]
 };
 
