@@ -1,5 +1,4 @@
 //LLMs were used for a few function, view the chat log here: https://gemini.google.com/share/fe7fd7289a33
-
 class HealthBar {
     constructor(scene, x, y) {
         this.bar = new Phaser.GameObjects.Graphics(scene);
@@ -45,7 +44,6 @@ class HealthBar {
         this.bar.fillRect(this.x, this.y, 250, 16);
 
         //  Health
-
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(this.x + 2, this.y + 2, this.maxHealthbarSize, 12);
 
@@ -102,11 +100,9 @@ class Maze extends Phaser.Scene {
         //18: GREY TILES | 36: GOAL TILES (stairs) | 370: THINKING TILES (green tiles) | 0: EMPTY TILES (just in case)
         let walkables = [18, 36, 0, 370];
 
-        // Initialize EasyStar pathfinder
         this.finder = new EasyStar.js();
         this.finder.setGrid(tinyTownGrid);
 
-        // Tell EasyStar which tiles can be walked on
         this.finder.setAcceptableTiles(walkables);
 
         this.pointMap = new Map()

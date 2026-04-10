@@ -23,8 +23,10 @@ class Load extends Phaser.Scene{
         //use .launch to start your scenes so they can run in parallel and not interrupt each other - Robert
         this.scene.launch('GameManager')
         this.scene.launch('mazeScene')
-        this.scene.launch('MiniGame')
         this.scene.launch('ShopScene')
+        this.scene.launch('MiniGame')
+
+        this.scene.moveBelow('ShopScene', 'mazeScene') //moves the maze scene to be below the shop scene
     }
 
 }
