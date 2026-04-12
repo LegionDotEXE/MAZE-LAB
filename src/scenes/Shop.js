@@ -29,10 +29,10 @@ class Shop extends Phaser.Scene {
         */
 
         // Phone sprite using asset
-        this.closedPhone = this.add.image(500, 320, 'phone_closed')
+        this.closedPhone = this.add.image(700, 480, 'phone_closed')
             .setInteractive({ useHandCursor: true })
             .setDepth(100)      
-            .setScale(0.9)
+            .setScale(0.4)
         
         // hover effect
         this.closedPhone.on('pointerover', () => {
@@ -84,18 +84,18 @@ class Shop extends Phaser.Scene {
 
         // Use phone open asset as background
         const phoneBody = this.add.image(phoneX, phoneY, 'phone_open')
-            .setScale(0.4)
+            .setScale(0.3)
 
         // Shop title text
-        const title = this.add.text(phoneX, phoneY - 145, "SHOP", {
-            fontSize: "24px",
-            color: "#ffffff",
+        const title = this.add.text(phoneX, phoneY - 120, "SHOP", {
+            fontSize: "22px",
+            color: "#000000",
             fontStyle: "bold",
             fontFamily: 'monospace'
         }).setOrigin(0.5).setDepth(201)
 
         // Close button
-        const closeText = this.add.text(phoneX + 100, phoneY - 165, "X", {
+        const closeText = this.add.text(phoneX + 60, phoneY - 120, "X", {
             fontSize: "22px",
             color: "#ff6666",
             fontStyle: "bold",
@@ -119,9 +119,14 @@ class Shop extends Phaser.Scene {
             { key: "trip",  icon: "trip",  x: phoneX - 55, y: phoneY + 50 },
             { key: "none",  icon: null,    x: phoneX + 55, y: phoneY + 50 }
         ];
+            /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
+            { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
+            { label: "Upgrade 3", x: phoneX - 40, y: phoneY + 50 },
+            { label: "Upgrade 4", x: phoneX + 40, y: phoneY + 50 }
+        ]*/
 
         buttonData.forEach((data, index) => {
-            const button = this.add.rectangle(data.x, data.y, 85, 85, 0x00aa00)
+            const button = this.add.rectangle(data.x, data.y, 65, 65, 0x00aa00)
                 .setStrokeStyle(2, 0xffffff)
                 .setInteractive({ useHandCursor: true })
                 .setDepth(201);
@@ -136,6 +141,12 @@ class Shop extends Phaser.Scene {
                 // gray out unlocked icons
                 icon.setTint(0x555555);
             }
+            const label = this.add.text(data.x, data.y, data.label, {
+                fontSize: "11px",
+                color: "#000000",
+                align: "center",
+                wordWrap: { width: 70 }
+            }).setOrigin(0.5).setDepth(201)
 
             button.on("pointerdown", () => {
                 this.buyItem(index, data.key, icon);
