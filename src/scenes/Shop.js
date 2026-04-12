@@ -114,35 +114,40 @@ class Shop extends Phaser.Scene {
 
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
-            { label: "Upgrade 1", x: phoneX - 55, y: phoneY - 50 },
-            { label: "Upgrade 2", x: phoneX + 55, y: phoneY - 50 },
-            { label: "Upgrade 3", x: phoneX - 55, y: phoneY + 50 },
-            { label: "Upgrade 4", x: phoneX + 55, y: phoneY + 50 }
-        ]
+            { key: "high",  icon: "high",  x: phoneX - 55, y: phoneY - 50 },
+            { key: "crack", icon: "crack", x: phoneX + 55, y: phoneY - 50 },
+            { key: "trip",  icon: "trip",  x: phoneX - 55, y: phoneY + 50 },
+            { key: "none",  icon: null,    x: phoneX + 55, y: phoneY + 50 }
+        ];
 
         buttonData.forEach((data, index) => {
             const button = this.add.rectangle(data.x, data.y, 85, 85, 0x00aa00)
                 .setStrokeStyle(2, 0xffffff)
                 .setInteractive({ useHandCursor: true })
-                .setDepth(201)
+                .setDepth(201);
 
-            const label = this.add.text(data.x, data.y, data.label, {
-                fontSize: "14px",
-                color: "#ffffff",
-                align: "center",
-                wordWrap: { width: 70 }
-            }).setOrigin(0.5).setDepth(201)
+            // added icons
+            let icon = null;
+            if (data.icon) {
+                icon = this.add.image(data.x, data.y, data.icon)
+                    .setScale(5)
+                    .setDepth(202);
+
+                // gray out unlocked icons
+                icon.setTint(0x555555);
+            }
 
             button.on("pointerdown", () => {
-                this.buyItem(index)
-            })
+                this.buyItem(index, data.key, icon);
+            });
 
             this.shopButtons.push({
                 button,
-                label,
+                icon,
+                key: data.key,
                 bought: false
-            })
-        })
+            });
+        });
 
         //Okay this was somewhat new to me but a container is really OP, it works kinda like an 
         //empty game object from unity in which everything inside it will be affected by changes to the container 
@@ -168,12 +173,13 @@ class Shop extends Phaser.Scene {
             phoneBody,
             title,
             closeText,
-            ...this.shopButtons.flatMap(item => [item.button, item.label])
+            ...this.shopButtons.flatMap(item => [item.button, item.icon].filter(Boolean))
         ])
 
         // Optional: start scaled down so it can animate open
         this.shopContainer.setScale(0)
     }
+    
 
     openShop() {
         if (this.shopOpen) return
@@ -211,16 +217,23 @@ class Shop extends Phaser.Scene {
     //We can use this function to handle the logic for buying items
     //for now it just changes the button color and text but we can easily expand 
     //this so that it spawns the drugs or whatever we want to add to the game when an item is bought
-    buyItem(index) {
-        const item = this.shopButtons[index]
+    buyItem(index, key, icon) {
+        const item = this.shopButtons[index];
 
-        if (item.bought) return
+        if (item.bought) return;
+        if (key === "none") return;
 
-        item.bought = true
-        item.button.setFillStyle(0xaa0000)
-        item.button.disableInteractive()
-        item.label.setText("BOUGHT")
+        item.bought = true;
 
-        console.log(`Bought item ${index + 1}`)
+        // unlock the drug
+        window.drugUnlocks[key] = true;
+
+        // unlocked means gray
+        if (icon) {
+            icon.clearTint();
+        }
+
+        item.button.disableInteractive();
+        console.log(`Unlocked ${key}`);
     }
 }

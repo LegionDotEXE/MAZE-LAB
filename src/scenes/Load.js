@@ -12,6 +12,18 @@ class Load extends Phaser.Scene{
 
         // lobster sprite
         this.load.image("Lobster", "Lobster16.png");
+        this.load.image("LobsterHigh", "LobsterHigh.png");
+        this.load.image("LobsterCrack", "LobsterCrack.png");
+        this.load.image("LobsterTrip", "LobsterTrip.png");
+
+        // drug icons
+        this.load.image("high", "high.png");
+        this.load.image("Phigh", "Phigh.png");
+        this.load.image("crack", "crack.png");
+        this.load.image("Pcrack", "Pcrack.png");
+        this.load.image("trip", "trip.png");
+        this.load.image("Ptrip", "Ptrip.png");
+
 
         // Load tilemap information
         this.load.image("maze_tiles", "tileset_full.png");  //tileset

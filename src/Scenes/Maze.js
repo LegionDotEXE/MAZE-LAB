@@ -150,7 +150,7 @@ class Maze extends Phaser.Scene {
         this.healthDeplete = this.time.addEvent({
             delay: 1000,
             callback: () => {
-                const isEmpty = this.HP.decrease(1);
+                const isEmpty = this.HP.decrease(1 * this.activeCharacter.getHealthDrainMultiplier());
                 if (isEmpty) {
                     this.healthDeplete.remove(false);
                     // add black screen or whatever else here when lobster dies
