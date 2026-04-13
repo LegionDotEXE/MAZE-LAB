@@ -45,7 +45,7 @@ class MainUI extends Phaser.Scene {
 
     initState() {
         this.maxSlot = 3;
-        this.usedSlot = 0;
+        //this.usedSlot = 0;
 
         this.drugs = this.cache.json.get('drugData');
 
@@ -68,7 +68,15 @@ class MainUI extends Phaser.Scene {
         this.targetBoxes.forEach(box => {
             box.rect.on('pointerdown', () => {
                 if (this.selectedDrug && !box.occupied) {
+                    const drug = this.getDrugByPackSprite(this.selectedDrug);
+
                     box.placeDrug(this.selectedDrug);
+
+                    if (drug && drug.slotIndex !== null) {
+                        this.freeSlot(drug.slotIndex);
+                        drug.slotIndex = null;
+                    }
+
                     this.selectedDrug.clearTint();
                     this.selectedDrug.disableInteractive();
                     this.selectedDrug = null;
@@ -100,6 +108,11 @@ class MainUI extends Phaser.Scene {
             // show up the slot positions with rectangles, can be removed if not needed
             this.add.rectangle(x + this.shopPadding, y, 60, 60, 0xffffff, 0.08).setStrokeStyle(1, 0xffffff);
         }
+    }
+
+    showSlotFullMessage() {
+        const msg = this.add.text(this.cameras.main.centerX, 50, "All slots are full!");
+        
     }
 
     createShop() {
@@ -145,12 +158,14 @@ class MainUI extends Phaser.Scene {
             return;
         }
 
-        if (this.usedSlot >= this.maxSlot) {
+        const slotIndex = this.getFirstEmptySlotIndex();
+
+        if (slotIndex === -1) {
             this.showSlotFullMessage();
             return;
         }
 
-        const slot = this.drugSlots[this.usedSlot];
+        const slot = this.drugSlots[slotIndex];
 
         const packSprite = this.add.sprite(slot.x, slot.y, drug.texture)
             .setScale(2)
@@ -179,27 +194,32 @@ class MainUI extends Phaser.Scene {
 
         drug.packSprite = packSprite;
         drug.bought = true;
-        drug.slotIndex = this.usedSlot;
+        drug.slotIndex = slotIndex;
         drug.soldOutText.setVisible(true);
-
-        this.usedSlot += 1;
     }
 
-    // not sure how to show the message yet
-    // showSlotFullMessage() {
-    //     const msg = this.add.text(this.cameras.main.centerX, 50, "All slots are full!");
-    // }
+    // Helper methods, looking for the first empty slot in the drug pack and free the slot when a drug is placed in target box
+    getFirstEmptySlotIndex() {
+        return this.drugSlots.findIndex(slot => !slot.occupied);
+    }
+
+    // Free the slot when a drug is placed in target box, and also clear the reference to the pack sprite in drug data
+    freeSlot(slotIndex) {
+        if (slotIndex < 0 || slotIndex >= this.drugSlots.length) return;
+
+        this.drugSlots[slotIndex].occupied = false;
+        this.drugSlots[slotIndex].sprite = null;
+    }
+
+    // Helper method to find drug data by its pack sprite, used for both click and drag operations
+    getDrugByPackSprite(sprite) {
+        return this.drugs.find(drug => drug.packSprite === sprite);
+    }
 
 
-    // The druge useage actually have huge issue right now
-    // The useSlot is just a pointer to the next empty slot
-    // but when the drug is used, the slot will be cleared but the pointer won't move back
-    // even it does won't help becasue the drug is not always used in order.
-
-    // Here is my current thinking, we only doing a check when buy, every time we buy we check if there is any empty slot
-    // if there is no empty slot, we show the message and prevent the buy, if there is empty slot, 
-    // we will reorder the slot, move the exiting drug to the left and move the pointer to the empty slot
-    // Or we can write a function to find the first empty slot every time we buy
+    // Global input handlers for dragging drugs from pack to target boxes
+    // Now the slot will be freed when the drug is placed in target box, and the reference to pack sprite in drug data will also be cleared
+    // The same drug can be bought again if needed
     bindGlobalInput() {
         this.input.on('dragstart', (pointer, gameObject) => {
             if (!gameObject.visible) return;
@@ -246,10 +266,17 @@ class MainUI extends Phaser.Scene {
             }
 
             if (hitBox) {
+                const drug = this.getDrugByPackSprite(this.dragSource);
+
                 hitBox.placeDrug(this.dragSource);
+
+                if (drug && drug.slotIndex !== null) {
+                    this.freeSlot(drug.slotIndex);
+                    drug.slotIndex = null;
+                }
+
                 this.dragSource.clearTint();
                 this.dragSource.disableInteractive();
-
 
                 if (this.selectedDrug === this.dragSource) {
                     this.selectedDrug = null;
