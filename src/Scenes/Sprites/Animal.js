@@ -55,16 +55,6 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             tweens: movementTweens
         });
     }
-
-
-    increaseThinkingTime(val) {
-        this.savedThinkingTime = this.thinkingTime;
-        this.thinkingTime = val;
-    }
-
-    resetThinkingTime() {
-        this.thinkingTime = this.savedThinkingTime;
-    }
 }
 
 
@@ -77,7 +67,7 @@ class MoveState extends State {
             character.moveCharacter(character, path)
         }
         else {
-            //had LLMs fix write the below code
+            //had LLMs fix the below code
             if (character.activeTweens && character.activeTweens.callbacks) {
                 character.activeTweens.resume();
             } 
@@ -92,7 +82,7 @@ class ThinkingState extends State {
         if (character.activeTweens) {
             character.activeTweens.pause();
         }
-        character.scene.time.delayedCall(character.thinkingTime, () => { //500 is a small buffer to prevent bugs, should be replaced
+        character.scene.time.delayedCall(character.thinkingTime, () => { 
             character.statemachine.transition("Moving");
         }, null, this);
     }

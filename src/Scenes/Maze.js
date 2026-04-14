@@ -234,15 +234,16 @@ class Maze extends Phaser.Scene {
         this.activeCharacter.setVisible(false);
         this.blackScreen.setVisible(true);
 
+        //In some scenarios the lobster will still end up in the "moving" state while the screen is blank
+        //And they are not moving. Right now there is no issues but could be an issue if other functionality is added
+        //to the moving state while it's active
         this.activeCharacter.statemachine.transition("Thinking");
     }
 
-
+    //this function is called by mini-game.js
     showScreen() {
         this.activeCharacter.setVisible(true);
         this.blackScreen.setVisible(false);
-
-        console.log(this.activeCharacter.thinkingTime);
 
         this.resetCharacter(this.activeCharacter);
     }
@@ -270,7 +271,7 @@ class Maze extends Phaser.Scene {
             if (this.activeCharacter.statemachine.state === "Moving") {
                 tile.properties.THINKING = false;
                 this.activeCharacter.statemachine.transition("Thinking");
-                //thinking tiles turn themselves off for the characters thinking time + 1.5s in order to prevent the lobster 
+                //thinking tiles turn themselves off for the characters thinking time + 2s in order to prevent the lobster 
                 //from being stuck thinking on the same tile for so long
                 this.time.delayedCall((this.activeCharacter.thinkingTime + 2000), () => {
                     tile.properties.THINKING = true;
