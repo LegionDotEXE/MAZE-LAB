@@ -10,6 +10,10 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.mapref = map;
         this.ignoreTile = false;
 
+        this.savedThinkingTime = this.thinkingTime;
+
+        this.Call = null;
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
@@ -32,7 +36,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             [this]);
 
         return this;
-    }   
+    }
 
 
     moveCharacter(character, path) {
@@ -51,19 +55,32 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             tweens: movementTweens
         });
     }
+
+
+    increaseThinkingTime(val) {
+        this.savedThinkingTime = this.thinkingTime;
+        this.thinkingTime = val;
+    }
+
+    resetThinkingTime() {
+        this.thinkingTime = this.savedThinkingTime;
+    }
 }
 
 
 // movement state classes
 class MoveState extends State {
     enter(character, path) {
-        //console.log("moving")
+        console.log("moving")
         //animation for moving
         if (path) {
             character.moveCharacter(character, path)
         }
         else {
-            character.activeTweens.resume();
+            //had LLMs fix write the below code
+            if (character.activeTweens && character.activeTweens.callbacks) {
+                character.activeTweens.resume();
+            } 
         }
     }
 }
@@ -71,11 +88,11 @@ class MoveState extends State {
 class ThinkingState extends State {
     enter(character) {
         //animation for thinking
-        console.log("thinking")
+        console.log("thinking");
         if (character.activeTweens) {
             character.activeTweens.pause();
         }
-        character.scene.time.delayedCall(character.thinkingTime, () => {
+        character.scene.time.delayedCall(character.thinkingTime, () => { //500 is a small buffer to prevent bugs, should be replaced
             character.statemachine.transition("Moving");
         }, null, this);
     }

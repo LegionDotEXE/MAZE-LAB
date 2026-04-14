@@ -10,7 +10,6 @@ class HealthBar {
         this.maxHealthbarSize = 246;
         this.p = this.maxHealthbarSize / 100;
 
-
         this.draw();
 
         scene.add.existing(this.bar);
@@ -18,7 +17,7 @@ class HealthBar {
 
     decrease(amount) {
         this.value -= amount;
-        this.gameManager.battery -= amount;
+        this.gameManager.battery = this.value;
 
         if (this.value < 0) {
             this.value = 0;
@@ -47,6 +46,7 @@ class HealthBar {
         this.bar.fillRect(this.x, this.y, 250, 16);
 
         //  Health
+
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(this.x + 2, this.y + 2, this.maxHealthbarSize, 12);
 
@@ -91,6 +91,12 @@ class Maze extends Phaser.Scene {
         this.groundLayer = this.map.createLayer("Ground", this.tileset, 0, 0);
         this.wallLayer = this.map.createLayer("MazeWalls", this.tileset, 0, 0);
 
+        // Black Screen
+        const layerData = this.map.images.find(layer => layer.name === "BlankScreen");
+        this.blackScreen = this.map.createLayer("BlankScreen", this.tileset, 0, 0);
+        this.blackScreen = this.add.image(layerData.x, layerData.y, "blackScreen");
+        this.blackScreen.setOrigin(0, 0);
+        this.blackScreen.setVisible(false);
 
         // Camera settings
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -139,20 +145,23 @@ class Maze extends Phaser.Scene {
         this.HP = new HealthBar(this, this.startingLocation.x + 18.5, this.startingLocation.y - 105);
 
         // health bar goes down over time - taylor
+
         this.healthDeplete = this.time.addEvent({
-            delay: 1000,
+            delay: 500,
             callback: () => {
                 const isEmpty = this.HP.decrease(1);
                 if (isEmpty) {
-                    this.healthDeplete.remove(false);
-                    // add black screen or whatever else here when lobster dies
+                    if (!this.healthDeplete.paused) {
+                        this.hideScreen(this.activeCharacter);
+                    }
+                    this.healthDeplete.paused = true;
                 }
             },
             callbackScope: this,
             loop: true
         });
-    }
 
+    }
 
     update() {
     }
@@ -215,6 +224,27 @@ class Maze extends Phaser.Scene {
             }
         });
         this.finder.calculate();
+    }
+
+    hideScreen(player) {
+        player.x = this.startingLocation2.x;
+        player.y = this.startingLocation2.y;
+        this.activeCharacter.activeTweens.stop();
+
+        this.activeCharacter.setVisible(false);
+        this.blackScreen.setVisible(true);
+
+        this.activeCharacter.statemachine.transition("Thinking");
+    }
+
+
+    showScreen() {
+        this.activeCharacter.setVisible(true);
+        this.blackScreen.setVisible(false);
+
+        console.log(this.activeCharacter.thinkingTime);
+
+        this.resetCharacter(this.activeCharacter);
     }
 
     resetCharacter(player) {
