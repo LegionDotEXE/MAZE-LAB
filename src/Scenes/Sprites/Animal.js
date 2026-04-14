@@ -10,10 +10,6 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.mapref = map;
         this.ignoreTile = false;
 
-        this.savedThinkingTime = this.thinkingTime;
-
-        this.Call = null;
-
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
