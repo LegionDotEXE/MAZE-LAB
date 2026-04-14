@@ -5,94 +5,65 @@ class MainUI extends Phaser.Scene {
 
     preload() {
         this.load.json('drugData', '../lib/Drugs.json');
-        this.load.image("Drug1", "../assets/DrugT1.png");
-        this.load.image("Drug2", "../assets/DrugT2.png");
+        this.load.image('Drug1', '../assets/DrugT1.png');
+        this.load.image('Drug2', '../assets/DrugT2.png');
     }
 
     create() {
-
         this.initConfig();
         this.initState();
 
-        //useless text, will delete later
-        this.add.text(20, 20, "Main UI Scene", { font: "16px Arial", fill: "#ffffff" });
+        // Temporary title text, you can remove it.
+        this.add.text(20, 20, 'Main UI Scene', {
+            font: '16px Arial',
+            fill: '#ffffff'
+        });
 
-
-
-        this.createTargetBoxes();
         this.createDrugPack();
         this.createPackSlots();
-
-        // This is only from top to bottom
-        // need to change the method of creating shop
+        this.createTargetBoxes();
         this.createShop();
 
+        // Global input handling for dragging and dropping drugs
         this.bindGlobalInput();
     }
 
     initConfig() {
-        // slot width: spacing + slotPadding * maxSlot
+        this.maxSlot = 3;
         this.slotSpacing = 100;
         this.slotPadding = 20;
         this.packHeight = 120;
 
-        //Since there is already shop in main, the method shop create needs to be changed
         this.shopHeight = 320;
-        this.shopPadding = 30;
         this.shopWidth = 120;
-
+        this.shopPadding = 30;
     }
 
     initState() {
-        this.maxSlot = 3;
-        //this.usedSlot = 0;
-
         this.drugs = this.cache.json.get('drugData');
 
-        this.targetBoxes = [];
         this.drugSlots = [];
+        this.targetBoxes = [];
 
         this.selectedDrug = null;
         this.dragSource = null;
         this.dragGhost = null;
-        
-    }
-
-    createTargetBoxes() {
-        this.targetBoxes = [
-            // Example positions, can be adjusted as needed
-            new TargetBox(this, 200, 200),
-            new TargetBox(this, 320, 200)
-        ];
-
-        this.targetBoxes.forEach(box => {
-            box.rect.on('pointerdown', () => {
-                if (this.selectedDrug && !box.occupied) {
-                    const drug = this.getDrugByPackSprite(this.selectedDrug);
-
-                    box.placeDrug(this.selectedDrug);
-
-                    if (drug && drug.slotIndex !== null) {
-                        this.freeSlot(drug.slotIndex);
-                        drug.slotIndex = null;
-                    }
-
-                    this.selectedDrug.clearTint();
-                    this.selectedDrug.disableInteractive();
-                    this.selectedDrug = null;
-                }
-            });
-        });
-        
     }
 
     createDrugPack() {
         const cam = this.cameras.main;
         const packWidth = this.slotPadding + this.slotSpacing * this.maxSlot;
-        
-        this.drugPack = this.add.rectangle(cam.width, cam.height, packWidth, this.packHeight, 0x333366)
-            .setOrigin(1, 1)
-            .setStrokeStyle(2, 0xffffff);
+
+        // Draw the drug pack area on the right side of the screen, maybe you want to change the cordinates and size?
+        this.drugPack = this.add.rectangle(
+            cam.width,
+            cam.height,
+            packWidth,
+            this.packHeight,
+            0x333366
+        )
+        .setOrigin(1, 1)
+        .setStrokeStyle(2, 0xffffff);
 
         this.packStartX = this.drugPack.x - this.drugPack.width;
         this.packCenterY = this.drugPack.y - this.drugPack.height / 2;
@@ -100,27 +71,51 @@ class MainUI extends Phaser.Scene {
 
     createPackSlots() {
         for (let i = 0; i < this.maxSlot; i++) {
-            const x = this.packStartX + 20 + i * this.slotSpacing;
+            const x = this.packStartX + 20 + i * this.slotSpacing + 30;
             const y = this.packCenterY;
 
-            this.drugSlots.push({x, y, occupied: false, sprite: null});
+            const slot = new DrugContainer(this, x, y, 60, 60, 0xffffff, 0.08);
+            this.drugSlots.push(slot);
 
-            // show up the slot positions with rectangles, can be removed if not needed
-            this.add.rectangle(x + this.shopPadding, y, 60, 60, 0xffffff, 0.08).setStrokeStyle(1, 0xffffff);
+            slot.rect.setStrokeStyle(1, 0xffffff);
         }
     }
 
-    showSlotFullMessage() {
-        const msg = this.add.text(this.cameras.main.centerX, 50, "All slots are full!");
-        
+    createTargetBoxes() {
+        // cordinates and size of target boxes
+        this.targetBoxes = [
+            // x, y, width, height, color, alpha
+            new DrugContainer(this, 200, 200, 80, 80, 0x448844, 1),
+            new DrugContainer(this, 320, 200, 80, 80, 0x448844, 1)
+        ];
+
+
+        this.targetBoxes.forEach(container => {
+            container.rect.on('pointerdown', () => {
+                if (!this.selectedDrug) return;
+
+                const sourceContainer = this.getContainerBySprite(this.selectedDrug);
+                if (!sourceContainer || sourceContainer === container) return;
+
+                if (!container.hasDrug()) {
+                    container.setDrug(sourceContainer.drugData, sourceContainer.sprite);
+                    sourceContainer.clearDrug();
+                } else {
+                    sourceContainer.swapDrug(container);
+                }
+
+                this.selectedDrug.clearTint();
+                this.selectedDrug = null;
+            });
+        });
     }
 
     createShop() {
-        const can = this.cameras.main;
+        const cam = this.cameras.main;
 
         this.shop = this.add.rectangle(
             50,
-            can.height,
+            cam.height,
             this.shopWidth,
             this.shopHeight,
             0x663333
@@ -139,10 +134,10 @@ class MainUI extends Phaser.Scene {
                 .setOrigin(0.5, 0)
                 .setInteractive({ useHandCursor: true });
 
-            const soldOutText = this.add.text(shopSprite.x, shopSprite.y + 30, "Sold Out", {
-                font: "14px Arial",
-                color: "#ff6666"
-            }).setOrigin(0.5, 1).setVisible(false);
+            const soldOutText = this.add.text(shopSprite.x, shopSprite.y + 30, 'Sold Out', {
+                font: '14px Arial',
+                color: '#ff6666'
+            }).setOrigin(0.5, 1).setVisible(!!drug.bought);
 
             drug.shopSprite = shopSprite;
             drug.soldOutText = soldOutText;
@@ -154,34 +149,30 @@ class MainUI extends Phaser.Scene {
     }
 
     buyDrug(drug) {
-        if (drug.bought) {
-            return;
-        }
+        // If the drug is already bought, return
+        if (drug.bought) return;
 
-        const slotIndex = this.getFirstEmptySlotIndex();
+        // Find the first empty slot in the drug pack
+        const emptySlot = this.getFirstEmptyContainer(this.drugSlots);
 
-        if (slotIndex === -1) {
+        // We might not using this function, could be deleted if needed
+        if (!emptySlot) {
             this.showSlotFullMessage();
             return;
         }
 
-        const slot = this.drugSlots[slotIndex];
-
-        const packSprite = this.add.sprite(slot.x, slot.y, drug.texture)
+        // Create a new sprite for the drug in the pack and make it draggable
+        const packSprite = this.add.sprite(emptySlot.x, emptySlot.y, drug.texture)
             .setScale(2)
             .setOrigin(0, 0.5)
             .setInteractive({ useHandCursor: true });
 
-        packSprite.homeX = slot.x;
-        packSprite.homeY = slot.y;
-
         this.input.setDraggable(packSprite);
 
         packSprite.on('pointerdown', () => {
-            if (!packSprite.visible) return;
-
+            // Set the selected drug to this one when clicked
             this.selectedDrug = packSprite;
-
+            // Highlight the selected drug and clear highlights from other drugs
             this.drugs.forEach(d => {
                 if (d.packSprite) d.packSprite.clearTint();
             });
@@ -189,43 +180,45 @@ class MainUI extends Phaser.Scene {
             packSprite.setTint(0xffff88);
         });
 
-        slot.occupied = true;
-        slot.sprite = packSprite;
+        emptySlot.setDrug(drug, packSprite);
 
+        // Update drug state to bought and show sold out text in the shop, 
+        // if want to change to "Owned", just chage it in json file
         drug.packSprite = packSprite;
         drug.bought = true;
-        drug.slotIndex = slotIndex;
         drug.soldOutText.setVisible(true);
     }
 
-    // Helper methods, looking for the first empty slot in the drug pack and free the slot when a drug is placed in target box
-    getFirstEmptySlotIndex() {
-        return this.drugSlots.findIndex(slot => !slot.occupied);
+    getFirstEmptyContainer(containers) {
+        return containers.find(container => !container.hasDrug());
     }
 
-    // Free the slot when a drug is placed in target box, and also clear the reference to the pack sprite in drug data
-    freeSlot(slotIndex) {
-        if (slotIndex < 0 || slotIndex >= this.drugSlots.length) return;
-
-        this.drugSlots[slotIndex].occupied = false;
-        this.drugSlots[slotIndex].sprite = null;
+    // ... means combine two array into one array, and I just know that(This is suggest by AI btw)
+    getContainerBySprite(sprite) {
+        const allContainers = [...this.drugSlots, ...this.targetBoxes];
+        return allContainers.find(container => container.sprite === sprite);
     }
 
-    // Helper method to find drug data by its pack sprite, used for both click and drag operations
-    getDrugByPackSprite(sprite) {
-        return this.drugs.find(drug => drug.packSprite === sprite);
+    getContainerAtPoint(x, y) {
+        const allContainers = [...this.drugSlots, ...this.targetBoxes];
+        return allContainers.find(container => container.containsPoint(x, y));
     }
 
+    // We probably won't use this function, I just did not deleted just in case, actually useless.
+    showSlotFullMessage() {
+        const msg = this.add.text(this.cameras.main.centerX, 50, 'All slots are full!', {
+            font: '20px Arial',
+            color: '#ff6666'
+        }).setOrigin(0.5);
 
-    // Global input handlers for dragging drugs from pack to target boxes
-    // Now the slot will be freed when the drug is placed in target box, and the reference to pack sprite in drug data will also be cleared
-    // The same drug can be bought again if needed
+        this.time.delayedCall(1000, () => msg.destroy());
+    }
+
     bindGlobalInput() {
         this.input.on('dragstart', (pointer, gameObject) => {
-            if (!gameObject.visible) return;
-
             this.dragSource = gameObject;
 
+            // Create a ghost sprite that follows the pointer during dragging
             this.dragGhost = this.add.sprite(gameObject.x, gameObject.y, gameObject.texture.key)
                 .setOrigin(gameObject.originX, gameObject.originY)
                 .setScale(gameObject.scaleX, gameObject.scaleY)
@@ -234,56 +227,41 @@ class MainUI extends Phaser.Scene {
         });
 
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+            // Move the ghost sprite with the pointer
             if (!this.dragGhost) return;
 
+            // Keep the ghost centered on the pointer
             this.dragGhost.x = dragX;
             this.dragGhost.y = dragY;
 
-            let hoveringBox = null;
-
-            for (const box of this.targetBoxes) {
-                if (box.containsPoint(dragX, dragY) && !box.occupied) {
-                    hoveringBox = box;
-                    break;
-                }
-            }
-
-            this.targetBoxes.forEach(box => {
-                box.setHighlight(box === hoveringBox);
+            // Highlight potential drop targets
+            const targetContainer = this.getContainerAtPoint(dragX, dragY);
+            [...this.drugSlots, ...this.targetBoxes].forEach(container => {
+                container.setHighlight(container === targetContainer);
             });
         });
 
         this.input.on('dragend', () => {
             if (!this.dragGhost || !this.dragSource) return;
 
-            let hitBox = null;
+            // Find the source container and the target container based on the drag source and the final pointer position
+            const sourceContainer = this.getContainerBySprite(this.dragSource);
+            const targetContainer = this.getContainerAtPoint(this.dragGhost.x, this.dragGhost.y);
 
-            for (const box of this.targetBoxes) {
-                if (box.containsPoint(this.dragGhost.x, this.dragGhost.y) && !box.occupied) {
-                    hitBox = box;
-                    break;
+            // Handle drug swapping logic
+            if (sourceContainer && targetContainer && sourceContainer !== targetContainer) {
+                if (!targetContainer.hasDrug()) {
+                    targetContainer.setDrug(sourceContainer.drugData, sourceContainer.sprite);
+                    sourceContainer.clearDrug();
+                } else {
+                    sourceContainer.swapDrug(targetContainer);
                 }
             }
 
-            if (hitBox) {
-                const drug = this.getDrugByPackSprite(this.dragSource);
-
-                hitBox.placeDrug(this.dragSource);
-
-                if (drug && drug.slotIndex !== null) {
-                    this.freeSlot(drug.slotIndex);
-                    drug.slotIndex = null;
-                }
-
-                this.dragSource.clearTint();
-                this.dragSource.disableInteractive();
-
-                if (this.selectedDrug === this.dragSource) {
-                    this.selectedDrug = null;
-                }
-            }
-
-            this.targetBoxes.forEach(box => box.setHighlight(false));
+            // Clear highlights and destroy the ghost sprite
+            [...this.drugSlots, ...this.targetBoxes].forEach(container => {
+                container.setHighlight(false);
+            });
 
             this.dragGhost.destroy();
             this.dragGhost = null;
