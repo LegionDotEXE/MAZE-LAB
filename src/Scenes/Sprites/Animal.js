@@ -1,6 +1,7 @@
 class Animal extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame, map) {
         super(scene, x, y, texture, frame);
+        this.miniGame = scene.scene.get('MiniGame');
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
@@ -11,10 +12,12 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             completeMoney: 1
         };
 
-        this.drugTextures = {
+        // sprites
+        this.drugSprites = {
             high: "LobsterHigh",
             crack: "LobsterCrack",
-            trip: "LobsterTrip"
+            trip: "LobsterTrip",
+            meds: "LobsterMeds"
         };
         this.baseTexture = "Lobster";
 
@@ -23,48 +26,40 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             high: {
                 key: "high",
                 active: false,
-                unlocked: false,
-                duration: 20000,
-                cooldown: 10000,
-                timer: 0,
-                cooldownTimer: 0,
-                tint: 0x5bb450
+                unlocked: false
             },
 
             crack: {
                 key: "crack",
                 active: false,
                 unlocked: false,
-                duration: 20000,
-                cooldown: 10000,
-                timer: 0,
-                cooldownTimer: 0,
-                tint: 0x0021f3
             },
 
             trip: {
                 key: "trip",
                 active: false,
                 unlocked: false,
-                duration: 20000,
-                cooldown: 10000,
-                timer: 0,
-                cooldownTimer: 0,
-                tint: 0xFFDE21
+            },
+
+            meds: {
+                key: "meds",
+                active: false,
+                unlocked: false,
             }
         };
 
+        // drug array
         this.activeDrugs = [];
 
-        // tint cycling
-        this.tintTimer = 0;
-        this.tintIndex = 0;
+        // sprite cycling
+        this.spriteTimer = 0;
+        this.spriteIndex = 0;
 
         //this.Path = path;
         this.mapref = map;
         this.ignoreTile = false;
         this.lastPos = new Phaser.Math.Vector2(x, y);
-        this.direction = 1;
+        // this.direction = 1;
 
         // update active drug
         scene.events.on('update', this.updateDrugs, this);
@@ -73,7 +68,8 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.keys = scene.input.keyboard.addKeys({
             one: Phaser.Input.Keyboard.KeyCodes.ONE,
             two: Phaser.Input.Keyboard.KeyCodes.TWO,
-            three: Phaser.Input.Keyboard.KeyCodes.THREE
+            three: Phaser.Input.Keyboard.KeyCodes.THREE,
+            four: Phaser.Input.Keyboard.KeyCodes.FOUR
         });
 
         // movement state machine
@@ -115,44 +111,36 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
     // activate drugs
     activateDrugs(key) {
         const drug = this.drugs[key];
-
         if (!drug.unlocked) return;
 
-        // cancel if re-clicked
+        // toggle off
         if (drug.active) {
-            console.log(`${key} canceled early, cooldown started`);
+            console.log(`${key} off`);
             this.deactivateDrugs(drug);
             return;
         }
 
-        // Check cooldown
-        if (drug.cooldownTimer > 0) {
-            console.log(`${key} is on cooldown`);
-            return;
-        }
-
-        // maximum of 3 at a time
+        // max 3 drugs
         if (this.activeDrugs.length >= 3) {
-            console.log("Max active drugs reached");
+            console.log("max 3 drugs only");
             return;
         }
 
-        // activate
+        // toggle on
         drug.active = true;
-        drug.timer = drug.duration;
         this.activeDrugs.push(drug);
 
-        console.log(`${key} activated`);
     }
 
     // deactivate drugs
     deactivateDrugs(drug) {
         drug.active = false;
-        drug.timer = 0;
-        drug.cooldownTimer = drug.cooldown;
+
+        // specify drug
         this.activeDrugs = this.activeDrugs.filter(d => d !== drug);
-        this.tintIndex = 0;
-        console.log(`${drug.key} cooldown started`);
+        this.spriteIndex = 0; 
+
+        console.log(`${drug.key} af!`);
     }
 
     // update
@@ -173,26 +161,8 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         if (Phaser.Input.Keyboard.JustDown(this.keys.three)) {
             this.activateDrugs("trip");
         }
-
-        // activation/cooldown timers
-        for (let key in this.drugs) {
-            const drug = this.drugs[key];
-
-            if (drug.active) {
-                drug.timer -= delta;
-
-                if (drug.timer <= 0) {
-                    console.log(`${key} expired, cooldown started`);
-                    this.deactivateDrugs(drug);
-                }
-            } else if (drug.cooldownTimer > 0) {
-                drug.cooldownTimer -= delta;
-
-                if (drug.cooldownTimer <= 0) {
-                    drug.cooldownTimer = 0;
-                    console.log(`${key} cooldown finished`);
-                }
-            }
+        if (Phaser.Input.Keyboard.JustDown(this.keys.four)) {
+            this.activateDrugs("meds");
         }
 
         // apply effects
@@ -207,7 +177,9 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.speed = this.baseStats.speed;
         this.thinkingTime = this.baseStats.thinkingTime;
         this.completeMoney = this.baseStats.completeMoney;
+        this.healMultiplier = 1;
         let speedMultiplier = 1;
+        
 
         this.activeDrugs.forEach(drug => {
             switch (drug.key) {
@@ -222,12 +194,22 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
                 case "trip":
                     this.completeMoney = 5;
                     break;
+
+                case "meds":
+                    speedMultiplier *= 0.5;
+                    this.healMultiplier = 2;
+                    break;
             }
         });
 
         // speed check
         this.currentSpeedMultiplier = speedMultiplier;
         this.updateTweenSpeed();
+
+        // heal increase
+        if (this.miniGame) {
+            this.miniGame.healAmount = this.healMultiplier || 1;
+        }
     }
 
     updateSprite(delta) {
@@ -240,27 +222,32 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         // one drug
         if (this.activeDrugs.length === 1) {
             const drug = this.activeDrugs[0];
-            this.setTexture(this.drugTextures[drug.key]);
+            this.setTexture(this.drugSprites[drug.key]);
             return;
         }
 
         // multiple drugs
-        this.tintTimer += delta;
+        this.spriteTimer += delta;
         let interval = this.activeDrugs.length === 2 ? 500 : 250;
 
-        if (this.tintTimer >= interval) {
-            this.tintTimer = 0;
-            this.tintIndex = (this.tintIndex + 1) % this.activeDrugs.length;
+        if (this.spriteTimer >= interval) {
+            this.spriteTimer = 0;
+            this.spriteIndex = (this.spriteIndex + 1) % this.activeDrugs.length;
         }
 
         // safety clamp
-        if (this.tintIndex >= this.activeDrugs.length) {
-            this.tintIndex = 0;
+        if (this.spriteIndex >= this.activeDrugs.length) {
+            this.spriteIndex = 0;
         }
 
-        const currentDrug = this.activeDrugs[this.tintIndex];
+        const currentDrug = this.activeDrugs[this.spriteIndex];
         if (!currentDrug) return; 
-        this.setTexture(this.drugTextures[currentDrug.key]);
+        this.setTexture(this.drugSprites[currentDrug.key]);
+    }
+
+    // extra health gain
+    getHealMultiplier() {
+        return this.healMultiplier || 1;
     }
 
     // extra health drain per drug

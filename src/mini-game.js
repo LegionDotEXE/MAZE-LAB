@@ -11,11 +11,12 @@ class MiniGame extends Phaser.Scene {
   create() {  
     this.Maze = game.scene.getScene('mazeScene');
     this.button = this.add.sprite(700, 300, 'buttonUp').setInteractive();
+    this.healAmount = 1;
 
     this.button.on('pointerdown', () => {
       this.gameManager.battery += 1; // Example of how to interact with GameManager's battery stat
-      this.Maze.HP.increase(1);
-      console.log(`Battery: ${ this.gameManager.battery}`);
+      this.Maze.HP.increase(this.healAmount || 1); // added healing variable for meds
+      //console.log(`Battery: ${ this.gameManager.battery}`);
        this.button.setTexture('buttonDown');
     });
 

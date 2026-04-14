@@ -15,6 +15,7 @@ class Load extends Phaser.Scene{
         this.load.image("LobsterHigh", "LobsterHigh.png");
         this.load.image("LobsterCrack", "LobsterCrack.png");
         this.load.image("LobsterTrip", "LobsterTrip.png");
+        this.load.image("LobsterMeds", "LobsterMeds.png");
 
         // drug icons
         this.load.image("high", "high.png");
@@ -23,6 +24,7 @@ class Load extends Phaser.Scene{
         this.load.image("Pcrack", "Pcrack.png");
         this.load.image("trip", "trip.png");
         this.load.image("Ptrip", "Ptrip.png");
+        this.load.image("meds", "meds.png");
 
 
         // Load tilemap information

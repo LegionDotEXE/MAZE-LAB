@@ -117,7 +117,7 @@ class Shop extends Phaser.Scene {
             { key: "high",  icon: "high",  x: phoneX - 55, y: phoneY - 50 },
             { key: "crack", icon: "crack", x: phoneX + 55, y: phoneY - 50 },
             { key: "trip",  icon: "trip",  x: phoneX - 55, y: phoneY + 50 },
-            { key: "none",  icon: null,    x: phoneX + 55, y: phoneY + 50 }
+            { key: "meds",  icon: "meds",  x: phoneX + 55, y: phoneY + 50 }
         ];
             /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
             { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
