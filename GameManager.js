@@ -1,0 +1,13 @@
+class GameManager extends Phaser.Scene {
+    constructor() {
+        super('GameManager')
+
+        // Initialize player stats
+        this.money = 0;
+        this.battery = 100;
+    }
+
+    create(){
+        this.add.sprite(0, 0, 'background').setOrigin(0, 0).setDepth(-1);
+    }
+}

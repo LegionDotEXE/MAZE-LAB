@@ -25,18 +25,19 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },        // Top-down architecture, as planned
-      debug: false
+      debug: true
     }
   },
   scale: {
-    mode: Phaser.Scale.FIT,
+    //mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [
-    Load,
-    MainUI
+    Load, MainUI, GameManager, MiniGame, Shop, Maze
   ]
 };
+
+var my = {sprite: {}}; //grabbed from my 120 class
 
 const game = new Phaser.Game(config);
 console.log("Unethical Lab initialized.");
