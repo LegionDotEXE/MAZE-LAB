@@ -14,7 +14,7 @@ class MainUI extends Phaser.Scene {
         this.initState();
 
         // Temporary title text, you can remove it.
-        this.add.text(20, 20, 'Main UI Scene', {
+        this.add.text(20, 20, 'Money:', {
             font: '16px Arial',
             fill: '#ffffff'
         });
@@ -85,8 +85,8 @@ class MainUI extends Phaser.Scene {
         // cordinates and size of target boxes
         this.targetBoxes = [
             // x, y, width, height, color, alpha
-            new DrugContainer(this, 200, 200, 80, 80, 0x448844, 1),
-            new DrugContainer(this, 320, 200, 80, 80, 0x448844, 1)
+            new DrugContainer(this, 430, 200, 80, 80, 0x448844, 1),
+            new DrugContainer(this, 550, 200, 80, 80, 0x448844, 1)
         ];
 
 
