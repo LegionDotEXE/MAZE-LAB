@@ -11,6 +11,7 @@ class MiniGame extends Phaser.Scene {
   create() {  
     this.Maze = game.scene.getScene('mazeScene');
     this.button = this.add.sprite(700, 300, 'buttonUp').setInteractive();
+    this.healAmount = 1;
 
     this.button.on('pointerdown', () => {
       if (this.gameManager.battery != 100){
@@ -18,7 +19,7 @@ class MiniGame extends Phaser.Scene {
           this.Maze.healthDeplete.paused = false;
           this.Maze.showScreen()
         }
-        this.Maze.HP.increase(1);
+        this.Maze.HP.increase(this.healAmount || 1);
       }
       console.log(`Battery: ${ this.gameManager.battery}`);
        this.button.setTexture('buttonDown');

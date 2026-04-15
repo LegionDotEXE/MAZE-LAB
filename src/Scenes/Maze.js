@@ -149,7 +149,7 @@ class Maze extends Phaser.Scene {
         this.healthDeplete = this.time.addEvent({
             delay: 500,
             callback: () => {
-                const isEmpty = this.HP.decrease(1);
+                const isEmpty = this.HP.decrease(1 * this.activeCharacter.getHealthDrainMultiplier());
                 if (isEmpty) {
                     if (!this.healthDeplete.paused) {
                         this.hideScreen(this.activeCharacter);

@@ -9,5 +9,12 @@ class GameManager extends Phaser.Scene {
 
     create(){
         this.add.sprite(0, 0, 'background').setOrigin(0, 0).setDepth(-1);
+
+        // drug unlocks
+        window.drugUnlocks = {
+            high: false,
+            crack: false,
+            trip: false
+        };
     }
 }
