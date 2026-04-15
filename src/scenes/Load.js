@@ -9,11 +9,8 @@ class Load extends Phaser.Scene{
         this.load.image('background', './images/BackgroundV1.png');
         this.load.image('buttonDown', './images/ButtonDown.png');
         this.load.image('buttonUp', './images/ButtonUp.png');
-<<<<<<< HEAD
         this.load.image('blackScreen', './images/blackscreen4.png');
         
-=======
->>>>>>> 54ee89c51436653d9214942c936b6c1fc53e14ba
 
         // lobster sprite
         this.load.image("Lobster", "Lobster16.png");
@@ -32,12 +29,9 @@ class Load extends Phaser.Scene{
         this.scene.launch('GameManager')
         this.scene.launch('mazeScene')
         this.scene.launch('ShopScene')
-<<<<<<< HEAD
         this.scene.launch('MiniGame')
 
         this.scene.moveBelow('ShopScene', 'mazeScene') //moves the maze scene to be below the shop scene
-=======
->>>>>>> 54ee89c51436653d9214942c936b6c1fc53e14ba
     }
 
 }
