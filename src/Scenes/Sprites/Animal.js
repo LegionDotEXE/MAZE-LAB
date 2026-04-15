@@ -54,7 +54,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         // sprite cycling
         this.spriteTimer = 0;
         this.spriteIndex = 0;
-
+      
         //this.Path = path;
         this.mapref = map;
         this.ignoreTile = false;
@@ -81,7 +81,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             [this]);
 
         return this;
-    }   
+    }
 
     // maze pathing
     moveCharacter(character, path) {
@@ -261,13 +261,16 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 // movement state classes
 class MoveState extends State {
     enter(character, path) {
-        //console.log("moving")
+        console.log("moving")
         //animation for moving
         if (path) {
             character.moveCharacter(character, path)
         }
         else {
-            character.activeTweens.resume();
+            //had LLMs fix the below code
+            if (character.activeTweens && character.activeTweens.callbacks) {
+                character.activeTweens.resume();
+            } 
         }
     }
 }
@@ -275,11 +278,11 @@ class MoveState extends State {
 class ThinkingState extends State {
     enter(character) {
         //animation for thinking
-        console.log("thinking")
+        console.log("thinking");
         if (character.activeTweens) {
             character.activeTweens.pause();
         }
-        character.scene.time.delayedCall(character.thinkingTime, () => {
+        character.scene.time.delayedCall(character.thinkingTime, () => { 
             character.statemachine.transition("Moving");
         }, null, this);
     }

@@ -14,10 +14,16 @@ class MiniGame extends Phaser.Scene {
     this.healAmount = 1;
 
     this.button.on('pointerdown', () => {
-      this.gameManager.battery += 1; // Example of how to interact with GameManager's battery stat
-      this.Maze.HP.increase(this.healAmount || 1); // added healing variable for meds
-      //console.log(`Battery: ${ this.gameManager.battery}`);
+      if (this.gameManager.battery != 100){
+        if (this.Maze.healthDeplete.paused) {
+          this.Maze.healthDeplete.paused = false;
+          this.Maze.showScreen()
+        }
+        this.Maze.HP.increase(this.healAmount || 1);
+      }
+      console.log(`Battery: ${ this.gameManager.battery}`);
        this.button.setTexture('buttonDown');
+
     });
 
     this.button.on('pointerup', () => {

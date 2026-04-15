@@ -1,14 +1,13 @@
 //LLMs were used for a few function, view the chat log here: https://gemini.google.com/share/fe7fd7289a33
-
 class HealthBar {
-    constructor (scene, x, y)
-    {
+    constructor(scene, x, y) {
         this.bar = new Phaser.GameObjects.Graphics(scene);
+        this.gameManager = game.scene.getScene('GameManager');
 
         this.x = x;
         this.y = y;
-        this.value = 100;
-        this.maxHealthbarSize = 246; 
+        this.value = this.gameManager.battery;
+        this.maxHealthbarSize = 246;
         this.p = this.maxHealthbarSize / 100;
 
         this.draw();
@@ -16,12 +15,11 @@ class HealthBar {
         scene.add.existing(this.bar);
     }
 
-    decrease (amount)
-    {
+    decrease(amount) {
         this.value -= amount;
+        this.gameManager.battery = this.value;
 
-        if (this.value < 0)
-        {
+        if (this.value < 0) {
             this.value = 0;
         }
 
@@ -30,20 +28,17 @@ class HealthBar {
         return (this.value === 0);
     }
     //increase amount for button - taylor
-    increase(amount)
-    {
-    this.value += amount;
+    increase(amount) {
+        this.value += amount;
 
-    if (this.value > 100)
-    {
-        this.value = 100;
+        if (this.value > 100) {
+            this.value = 100;
+        }
+
+        this.draw();
     }
 
-    this.draw();
-    }
-
-    draw ()
-    {
+    draw() {
         this.bar.clear();
 
         //  BG
@@ -55,12 +50,10 @@ class HealthBar {
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(this.x + 2, this.y + 2, this.maxHealthbarSize, 12);
 
-        if (this.value < 30)
-        {
+        if (this.value < 30) {
             this.bar.fillStyle(0xff0000);
         }
-        else
-        {
+        else {
             this.bar.fillStyle(0x00ff00);
         }
 
@@ -85,6 +78,7 @@ class Maze extends Phaser.Scene {
         // below is the size of the tilemap in tiles
         this.TILEWIDTH = 16;
         this.TILEHEIGHT = 16;
+        this.gameManager = game.scene.getScene('GameManager');
     }
 
     create() {
@@ -97,6 +91,12 @@ class Maze extends Phaser.Scene {
         this.groundLayer = this.map.createLayer("Ground", this.tileset, 0, 0);
         this.wallLayer = this.map.createLayer("MazeWalls", this.tileset, 0, 0);
 
+        // Black Screen
+        const layerData = this.map.images.find(layer => layer.name === "BlankScreen");
+        this.blackScreen = this.map.createLayer("BlankScreen", this.tileset, 0, 0);
+        this.blackScreen = this.add.image(layerData.x, layerData.y, "blackScreen");
+        this.blackScreen.setOrigin(0, 0);
+        this.blackScreen.setVisible(false);
 
         // Camera settings
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -109,11 +109,9 @@ class Maze extends Phaser.Scene {
         //18: GREY TILES | 36: GOAL TILES (stairs) | 370: THINKING TILES (green tiles) | 0: EMPTY TILES (just in case)
         let walkables = [18, 36, 0, 370];
 
-        // Initialize EasyStar pathfinder
         this.finder = new EasyStar.js();
         this.finder.setGrid(tinyTownGrid);
 
-        // Tell EasyStar which tiles can be walked on
         this.finder.setAcceptableTiles(walkables);
 
         this.pointMap = new Map()
@@ -147,20 +145,23 @@ class Maze extends Phaser.Scene {
         this.HP = new HealthBar(this, this.startingLocation.x + 18.5, this.startingLocation.y - 105);
 
         // health bar goes down over time - taylor
+
         this.healthDeplete = this.time.addEvent({
-            delay: 1000,
+            delay: 500,
             callback: () => {
                 const isEmpty = this.HP.decrease(1 * this.activeCharacter.getHealthDrainMultiplier());
                 if (isEmpty) {
-                    this.healthDeplete.remove(false);
-                    // add black screen or whatever else here when lobster dies
+                    if (!this.healthDeplete.paused) {
+                        this.hideScreen(this.activeCharacter);
+                    }
+                    this.healthDeplete.paused = true;
                 }
             },
             callbackScope: this,
             loop: true
         });
-    }
 
+    }
 
     update() {
     }
@@ -225,26 +226,54 @@ class Maze extends Phaser.Scene {
         this.finder.calculate();
     }
 
+    hideScreen(player) {
+        player.x = this.startingLocation2.x;
+        player.y = this.startingLocation2.y;
+        this.activeCharacter.activeTweens.stop();
+
+        this.activeCharacter.setVisible(false);
+        this.blackScreen.setVisible(true);
+
+        //In some scenarios the lobster will still end up in the "moving" state while the screen is blank
+        //And they are not moving. Right now there is no issues but could be an issue if other functionality is added
+        //to the moving state while it's active
+        this.activeCharacter.statemachine.transition("Thinking");
+    }
+
+    //this function is called by mini-game.js
+    showScreen() {
+        this.activeCharacter.setVisible(true);
+        this.blackScreen.setVisible(false);
+
+        this.resetCharacter(this.activeCharacter);
+    }
+
+    resetCharacter(player) {
+        player.x = this.startingLocation2.x;
+        player.y = this.startingLocation2.y;
+        //sets a new goal
+        this.initiatePath();
+        //prevents multiple tweens from occuring (no buggy looking movement)
+        this.activeCharacter.activeTweens.stop();
+    }
+
     //pulled from past project
     async TileEffecthandler(player, tile) {
         if (tile.properties.GOAL) {
             console.log("reached goal");
+            this.gameManager.money += this.activeCharacter.completeMoney;
+            console.log(this.gameManager.money);
             //resets to starting location
-            player.x = this.startingLocation2.x;
-            player.y = this.startingLocation2.y;
-            //sets a new goal
-            this.initiatePath();
-            //prevents multiple tweens from occuring (no buggy looking movement)
-            this.activeCharacter.activeTweens.stop();
+            this.resetCharacter(player)
         }
 
         if (tile.properties.THINKING) {
             if (this.activeCharacter.statemachine.state === "Moving") {
                 tile.properties.THINKING = false;
                 this.activeCharacter.statemachine.transition("Thinking");
-                //thinking tiles turn themselves off for the characters thinking time + 1.5s in order to prevent the lobster 
+                //thinking tiles turn themselves off for the characters thinking time + 2s in order to prevent the lobster 
                 //from being stuck thinking on the same tile for so long
-                this.time.delayedCall((this.activeCharacter.thinkingTime + 2000), () => { 
+                this.time.delayedCall((this.activeCharacter.thinkingTime + 2000), () => {
                     tile.properties.THINKING = true;
                 }, null, this);
             }

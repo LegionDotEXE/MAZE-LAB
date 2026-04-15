@@ -1,0 +1,26 @@
+[
+    {
+        "id": "drug1",
+        "texture": "Drug1",
+        "bought": false,
+        "buff": null,
+        "debuff": null,
+        "price": 1
+    },
+    {
+        "id": "drug2",
+        "texture": "Drug2",
+        "bought": false,
+        "buff": null,
+        "debuff": null,
+        "price": 1
+    },
+    {
+        "id": "drug3",
+        "texture": "Drug1",
+        "bought": false,
+        "buff": null,
+        "debuff": null,
+        "price": 1
+    }
+]
