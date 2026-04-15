@@ -10,7 +10,6 @@ class HealthBar {
         this.maxHealthbarSize = 246;
         this.p = this.maxHealthbarSize / 100;
 
-
         this.draw();
 
         scene.add.existing(this.bar);
@@ -18,7 +17,7 @@ class HealthBar {
 
     decrease(amount) {
         this.value -= amount;
-        this.gameManager.battery -= amount;
+        this.gameManager.battery = this.value;
 
         if (this.value < 0) {
             this.value = 0;
@@ -47,6 +46,7 @@ class HealthBar {
         this.bar.fillRect(this.x, this.y, 250, 16);
 
         //  Health
+
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(this.x + 2, this.y + 2, this.maxHealthbarSize, 12);
 
@@ -91,6 +91,12 @@ class Maze extends Phaser.Scene {
         this.groundLayer = this.map.createLayer("Ground", this.tileset, 0, 0);
         this.wallLayer = this.map.createLayer("MazeWalls", this.tileset, 0, 0);
 
+        // Black Screen
+        const layerData = this.map.images.find(layer => layer.name === "BlankScreen");
+        this.blackScreen = this.map.createLayer("BlankScreen", this.tileset, 0, 0);
+        this.blackScreen = this.add.image(layerData.x, layerData.y, "blackScreen");
+        this.blackScreen.setOrigin(0, 0);
+        this.blackScreen.setVisible(false);
 
         // Camera settings
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -139,20 +145,23 @@ class Maze extends Phaser.Scene {
         this.HP = new HealthBar(this, this.startingLocation.x + 18.5, this.startingLocation.y - 105);
 
         // health bar goes down over time - taylor
+
         this.healthDeplete = this.time.addEvent({
-            delay: 1000,
+            delay: 500,
             callback: () => {
                 const isEmpty = this.HP.decrease(1);
                 if (isEmpty) {
-                    this.healthDeplete.remove(false);
-                    // add black screen or whatever else here when lobster dies
+                    if (!this.healthDeplete.paused) {
+                        this.hideScreen(this.activeCharacter);
+                    }
+                    this.healthDeplete.paused = true;
                 }
             },
             callbackScope: this,
             loop: true
         });
-    }
 
+    }
 
     update() {
     }
@@ -217,6 +226,28 @@ class Maze extends Phaser.Scene {
         this.finder.calculate();
     }
 
+    hideScreen(player) {
+        player.x = this.startingLocation2.x;
+        player.y = this.startingLocation2.y;
+        this.activeCharacter.activeTweens.stop();
+
+        this.activeCharacter.setVisible(false);
+        this.blackScreen.setVisible(true);
+
+        //In some scenarios the lobster will still end up in the "moving" state while the screen is blank
+        //And they are not moving. Right now there is no issues but could be an issue if other functionality is added
+        //to the moving state while it's active
+        this.activeCharacter.statemachine.transition("Thinking");
+    }
+
+    //this function is called by mini-game.js
+    showScreen() {
+        this.activeCharacter.setVisible(true);
+        this.blackScreen.setVisible(false);
+
+        this.resetCharacter(this.activeCharacter);
+    }
+
     resetCharacter(player) {
         player.x = this.startingLocation2.x;
         player.y = this.startingLocation2.y;
@@ -240,7 +271,7 @@ class Maze extends Phaser.Scene {
             if (this.activeCharacter.statemachine.state === "Moving") {
                 tile.properties.THINKING = false;
                 this.activeCharacter.statemachine.transition("Thinking");
-                //thinking tiles turn themselves off for the characters thinking time + 1.5s in order to prevent the lobster 
+                //thinking tiles turn themselves off for the characters thinking time + 2s in order to prevent the lobster 
                 //from being stuck thinking on the same tile for so long
                 this.time.delayedCall((this.activeCharacter.thinkingTime + 2000), () => {
                     tile.properties.THINKING = true;

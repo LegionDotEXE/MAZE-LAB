@@ -65,8 +65,22 @@
          "width":18,
          "x":0,
          "y":0
+        }, 
+        {
+         "id":3,
+         "image":"images\/blackscreen4.png",
+         "imageheight":258,
+         "imagewidth":258,
+         "name":"BlankScreen",
+         "offsetx":31.5,
+         "offsety":79,
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":3,
+ "nextlayerid":4,
  "nextobjectid":1,
  "orientation":"orthogonal",
  "renderorder":"right-down",
