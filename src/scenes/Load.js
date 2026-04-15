@@ -25,6 +25,8 @@ class Load extends Phaser.Scene{
     }
 
     create(){
+        //this.add.text(20, 20, "Load Scene", { font: "16px Arial", fill: "#ffffff" });
+        this.scene.start("MainUI");
         //use .launch to start your scenes so they can run in parallel and not interrupt each other - Robert
         this.scene.launch('GameManager')
         this.scene.launch('mazeScene')
