@@ -4,9 +4,9 @@ class MainUI extends Phaser.Scene {
     }
 
     preload() {
-        this.load.json('drugData', '../lib/Drugs.json');
-        this.load.image('Drug1', '../assets/DrugT1.png');
-        this.load.image('Drug2', '../assets/DrugT2.png');
+        this.load.json('drugData', 'lib/Drugs.json');
+        this.load.image('Drug1', 'assets/DrugT1.png');
+        this.load.image('Drug2', 'assets/DrugT2.png');
     }
 
     create() {
