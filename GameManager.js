@@ -17,7 +17,5 @@ class GameManager extends Phaser.Scene {
             crack: false,
             trip: false
         };
-    }
-
-    
+    }   
 }

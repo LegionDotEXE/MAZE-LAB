@@ -66,7 +66,6 @@ class MainUI extends Phaser.Scene {
     }
 
     // For the purposes of updating the money - Ryle
-    // Money is being shown on phone for now
     update() {
         this.moneyUI.setText(`Money: $${this.gameManager.money}`);
     }
