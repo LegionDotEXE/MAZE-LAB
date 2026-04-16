@@ -49,16 +49,16 @@ class Shop extends Phaser.Scene {
 
         // Phone sprite using asset
         //this.closedPhone = this.add.image(400, 480, 'phone_closed')
-         this.closedPhone = this.add.image(70, 520, 'phone_closed')
+        this.closedPhone = this.add.image(70, 520, 'phone_closed')
             .setInteractive({ useHandCursor: true })
-            .setDepth(100)      
+            .setDepth(100)
             .setScale(0.4)
-        
+
         // hover effect
         this.closedPhone.on('pointerover', () => {
             this.closedPhone.setTint(0xaaaaaa)
         })
-        
+
         this.closedPhone.on('pointerout', () => {
             this.closedPhone.clearTint()
         })
@@ -74,14 +74,24 @@ class Shop extends Phaser.Scene {
 
         // Start hidden
         this.shopContainer.setVisible(false)
+        this.shopScreen.setVisible(false)
     }
 
     createShopUI() {
         const phoneX = 500
         const phoneY = 300
 
+        const mask = this.make.graphics();
+
+        mask.fillStyle(0xffffff); 
+        mask.fillRect(phoneX, phoneY, 70, 70);
+
+        const scrollMask = mask.createGeometryMask();
+
         // This creates a container to hold all shop UI elements
         this.shopContainer = this.add.container(0, 0).setDepth(200)
+
+        this.shopScreen = this.add.container(0, 0).setDepth(200)
 
         //This will most likely be replaced with a custom sprite but for now we can just use shapes to make a phone UI
         // OLD: replaced with phone_open asset from earlier branch
@@ -121,9 +131,9 @@ class Shop extends Phaser.Scene {
             fontStyle: "bold",
             fontFamily: 'monospace'
         })
-        .setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
-        .setDepth(201)
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .setDepth(201)
 
         closeText.on("pointerdown", () => {
             this.closeShop()
@@ -134,16 +144,16 @@ class Shop extends Phaser.Scene {
 
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
-            { key: "high",  icon: "high",  x: phoneX - 35, y: phoneY - 50 },
+            { key: "high", icon: "high", x: phoneX - 35, y: phoneY - 50 },
             { key: "crack", icon: "crack", x: phoneX + 40, y: phoneY - 50 },
-            { key: "trip",  icon: "trip",  x: phoneX - 35, y: phoneY + 50 },
-            { key: "meds",  icon: "meds",  x: phoneX + 40, y: phoneY + 50 }
+            { key: "trip", icon: "trip", x: phoneX - 35, y: phoneY + 50 },
+            { key: "meds", icon: "meds", x: phoneX + 40, y: phoneY + 50 }
         ];
-            /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
-            { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
-            { label: "Upgrade 3", x: phoneX - 40, y: phoneY + 50 },
-            { label: "Upgrade 4", x: phoneX + 40, y: phoneY + 50 }
-        ]*/
+        /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
+        { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
+        { label: "Upgrade 3", x: phoneX - 40, y: phoneY + 50 },
+        { label: "Upgrade 4", x: phoneX + 40, y: phoneY + 50 }
+    ]*/
 
         buttonData.forEach((data, index) => {
             const button = this.add.rectangle(data.x, data.y, 65, 65, 0x00aa00)
@@ -161,7 +171,7 @@ class Shop extends Phaser.Scene {
                 // gray out unlocked icons
                 icon.setTint(0x555555);
             }
-            
+
             /*
             const label = this.add.text(data.x, data.y, data.key, {
                 fontSize: "11px",
@@ -170,8 +180,6 @@ class Shop extends Phaser.Scene {
                 wordWrap: { width: 70 }
             }).setOrigin(0.5).setDepth(201)
             */
-
-
             const label = this.add.text(data.x, data.y, data.key, {
                 fontSize: "11px",
                 color: "#000000",
@@ -216,13 +224,17 @@ class Shop extends Phaser.Scene {
         this.shopContainer.add([
             phoneBody,
             title,
-            closeText,
+            closeText
+        ])
+        
+        this.shopScreen.add([
             ...this.shopButtons.flatMap(item => [item.button, item.icon].filter(Boolean))
         ])
 
-        this.shopContainer.setScale(0)
+        this.shopScreen.setMask(mask);
+        this.shopContainer.setScale(0);
     }
-    
+
 
     openShop() {
         if (this.shopOpen) return
@@ -235,7 +247,7 @@ class Shop extends Phaser.Scene {
 
         // Show labels ONLY after the scale animation completes
         this.tweens.add({
-            targets: this.shopContainer,
+            targets: [this.shopContainer, this.shopScreen],
             scaleX: 1,
             scaleY: 1,
             duration: 200,
@@ -264,7 +276,7 @@ class Shop extends Phaser.Scene {
         });
 
         this.tweens.add({
-            targets: this.shopContainer,
+            targets: [this.shopContainer, this.shopScreen],
             scaleX: 0,
             scaleY: 0,
             duration: 150,
@@ -290,12 +302,11 @@ class Shop extends Phaser.Scene {
         // unlock the drug
         window.drugUnlocks[key] = true;
         const drugObject = this.drugs.find(d => d.id === key);
-        
-        if (drugObject){
+
+        if (drugObject) {
             this.DragSystemUI.buyDrug(drugObject);
             this.sound.play("Pay");
-        } else 
-        {
+        } else {
             console.log("none wtf")
         }
 
