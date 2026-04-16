@@ -281,8 +281,7 @@ class Shop extends Phaser.Scene {
 
         this.closedPhone.setVisible(false)
         this.shopContainer.setVisible(true)
-        this.shopScreen.setVisible(true)
-
+        
         // Show labels ONLY after the scale animation completes
         this.tweens.add({
             targets: [this.shopContainer, this.shopScreen],
@@ -291,6 +290,7 @@ class Shop extends Phaser.Scene {
             duration: 200,
             ease: "Cubic.easeInOut",
             onComplete: () => {
+                this.shopScreen.setVisible(true)
                 this.shopButtons.forEach(item => {
                     if (item.label) {
                         item.label.setVisible(true);
