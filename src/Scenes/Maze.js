@@ -133,6 +133,9 @@ class Maze extends Phaser.Scene {
         this.startingLocation = { x: this.tileXtoWorld(1), y: this.tileYtoWorld(10) }
         this.startingLocation2 = { x: this.tileXtoWorld(10), y: this.tileYtoWorld(13) }
 
+        // set up goal item
+        this.goal = new Goal(this);
+
         // create lobster sprite
         my.sprite.lobster = new Animal(this, this.startingLocation2.x, this.startingLocation2.y, "Lobster", null, this.map).setOrigin(0, 0);
 
@@ -211,6 +214,10 @@ class Maze extends Phaser.Scene {
         var fromY = Math.floor(this.activeCharacter.y / this.TILESIZE);
         let goalX = Goal.x;
         let goalY = Goal.y;
+
+        // update goal sprite position
+        this.goal.setPosition(goalX, goalY);
+
         console.log('going from (' + fromX + ',' + fromY + ') to (' + goalX + ',' + goalY + ')');
 
         this.finder.findPath(fromX, fromY, goalX, goalY, (path) => {
@@ -232,6 +239,9 @@ class Maze extends Phaser.Scene {
         this.activeCharacter.setVisible(false);
         this.blackScreen.setVisible(true);
 
+        // hide goal item
+        this.goal.sprite.setVisible(false);
+
         //In some scenarios the lobster will still end up in the "moving" state while the screen is blank
         //And they are not moving. Right now there is no issues but could be an issue if other functionality is added
         //to the moving state while it's active
@@ -242,6 +252,9 @@ class Maze extends Phaser.Scene {
     showScreen() {
         this.activeCharacter.setVisible(true);
         this.blackScreen.setVisible(false);
+
+        // show goal item
+        this.goal.sprite.setVisible(true);
 
         this.resetCharacter(this.activeCharacter);
     }
@@ -264,6 +277,7 @@ class Maze extends Phaser.Scene {
             //resets to starting location
             this.resetCharacter(player)
         }
+        
 
         if (tile.properties.THINKING) {
 
@@ -288,5 +302,9 @@ class Maze extends Phaser.Scene {
                 }, null, this);
             }
         }
+    }
+
+    update(time, delta) {
+        this.goal.update(time, delta);
     }
 }
