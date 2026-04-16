@@ -8,6 +8,9 @@ class TitleScreen extends Phaser.Scene {
         // Fixed issue with phone still showing above the title screen
         this.scene.bringToTop('TitleScreen');
 
+        this.Maze = game.scene.getScene('mazeScene');
+        this.Maze.scene.sleep();
+
         const { width, height } = this.cameras.main;
 
         this.add.rectangle(0, 0, width, height, 0x0b0b17, 0.95).setOrigin(0);
@@ -53,6 +56,7 @@ class TitleScreen extends Phaser.Scene {
             this.instructionsPanel = null;
         }
         this.scene.stop();
+        this.Maze.scene.wake();
     }
 
     showInstructions() {

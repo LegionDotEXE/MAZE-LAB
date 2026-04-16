@@ -86,7 +86,8 @@ class Maze extends Phaser.Scene {
         this.map = this.add.tilemap("TestingMaze", this.TILESIZE, this.TILESIZE, this.TILEHEIGHT, this.TILEWIDTH);
 
         // Add a tileset to the map
-        this.tileset = this.map.addTilesetImage("TESTING TILESET FOR MAZE", "maze_tiles");
+        //this.tileset = this.map.addTilesetImage("TESTING TILESET FOR MAZE", "maze_tiles");
+        this.tileset = this.map.addTilesetImage("UpdatedTileset", "new_maze_tiles");
 
         // Create the layers
         this.groundLayer = this.map.createLayer("Ground", this.tileset, 0, 0);
@@ -100,15 +101,18 @@ class Maze extends Phaser.Scene {
         this.blackScreen.setVisible(false);
 
         // Camera settings
-        this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+        // holy shit i should've found out that i could've changed the maze position using this earlier 
+        this.cameras.main.setBounds(1, -3.5, this.map.widthInPixels, this.map.heightInPixels); 
         this.cameras.main.setZoom(this.SCALE);
 
         // Create grid of visible tiles for use with path planning
         let tinyTownGrid = this.layersToGrid([this.groundLayer, this.wallLayer]);
 
-        //GID of walkable tiles found in the JSON of Testing Maze
         //18: GREY TILES | 36: GOAL TILES (stairs) | 370: THINKING TILES (green tiles) | 0: EMPTY TILES (just in case)
-        let walkables = [18, 36, 0, 370];
+        //let walkables = [18, 36, 0, 370]; //old walkables for old tilset
+        
+        //401: BLACK TILES | 403: GOAL TILES | 402: THINKING TILES | 0: EMPTY TILES (just in case)
+        let walkables = [401, 403, 0, 402];
 
         this.finder = new EasyStar.js();
         this.finder.setGrid(tinyTownGrid);
@@ -131,7 +135,10 @@ class Maze extends Phaser.Scene {
         })
 
         this.startingLocation = { x: this.tileXtoWorld(1), y: this.tileYtoWorld(10) }
-        this.startingLocation2 = { x: this.tileXtoWorld(10), y: this.tileYtoWorld(13) }
+        this.startingLocation2 = { x: this.tileXtoWorld(15), y: this.tileYtoWorld(13) }
+
+        // set up goal item
+        this.goal = new Goal(this);
 
         // create lobster sprite
         my.sprite.lobster = new Animal(this, this.startingLocation2.x, this.startingLocation2.y, "Lobster", null, this.map).setOrigin(0, 0);
@@ -143,7 +150,7 @@ class Maze extends Phaser.Scene {
         this.initiatePath(); //start animal pathfinding and movement
 
         //Health bar spawns using lobster spawn location as basis (will change)
-        this.HP = new HealthBar(this, this.startingLocation.x + 18.5, this.startingLocation.y - 105);
+        this.HP = new HealthBar(this, this.startingLocation.x + 100, this.startingLocation.y + 214);
 
         // health bar goes down over time - taylor
 
@@ -211,6 +218,10 @@ class Maze extends Phaser.Scene {
         var fromY = Math.floor(this.activeCharacter.y / this.TILESIZE);
         let goalX = Goal.x;
         let goalY = Goal.y;
+
+        // update goal sprite position
+        this.goal.setPosition(goalX, goalY);
+
         console.log('going from (' + fromX + ',' + fromY + ') to (' + goalX + ',' + goalY + ')');
 
         this.finder.findPath(fromX, fromY, goalX, goalY, (path) => {
@@ -231,17 +242,29 @@ class Maze extends Phaser.Scene {
 
         this.activeCharacter.setVisible(false);
         this.blackScreen.setVisible(true);
+        this.scene.setVisible(false);
+
+        // hide goal item
+        this.goal.sprite.setVisible(false);
 
         //In some scenarios the lobster will still end up in the "moving" state while the screen is blank
         //And they are not moving. Right now there is no issues but could be an issue if other functionality is added
         //to the moving state while it's active
         this.activeCharacter.statemachine.transition("Thinking");
+        
+        
+        this.scene.sleep()
     }
-
+    
     //this function is called by mini-game.js
     showScreen() {
+        this.scene.wake();
         this.activeCharacter.setVisible(true);
         this.blackScreen.setVisible(false);
+        this.scene.setVisible(true);
+
+        // show goal item
+        this.goal.sprite.setVisible(true);
 
         this.resetCharacter(this.activeCharacter);
     }
@@ -264,6 +287,7 @@ class Maze extends Phaser.Scene {
             //resets to starting location
             this.resetCharacter(player)
         }
+        
 
         if (tile.properties.THINKING) {
 
@@ -288,5 +312,9 @@ class Maze extends Phaser.Scene {
                 }, null, this);
             }
         }
+    }
+
+    update(time, delta) {
+        this.goal.update(time, delta);
     }
 }
