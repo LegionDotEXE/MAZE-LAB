@@ -74,7 +74,7 @@ class Maze extends Phaser.Scene {
 
     init() {
         this.TILESIZE = 16;
-        this.SCALE = 1.25;
+        this.SCALE = 1;
         // below is the size of the tilemap in tiles
         this.TILEWIDTH = 16;
         this.TILEHEIGHT = 16;

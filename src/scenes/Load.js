@@ -10,6 +10,7 @@ class Load extends Phaser.Scene{
         this.load.image('buttonDown', './images/ButtonDown.png');
         this.load.image('buttonUp', './images/ButtonUp.png');
         this.load.image('blackScreen', './images/blackscreen4.png');
+        this.load.image('monitor', './images/Monitor.png');
         
         // lobster sprite
         this.load.image("Lobster", "./sprites/Lobster16.png");
