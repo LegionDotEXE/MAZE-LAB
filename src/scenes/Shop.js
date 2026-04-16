@@ -67,6 +67,10 @@ class Shop extends Phaser.Scene {
             this.openShop()
         })
 
+        // scrolling variable
+        this.scrollVal = 0;
+        this.scrollTweens = null;
+
         // -----------------------------
         // FULL SHOP PHONE (open state)
         // -----------------------------
@@ -83,8 +87,8 @@ class Shop extends Phaser.Scene {
 
         const mask = this.make.graphics();
 
-        mask.fillStyle(0xffffff); 
-        mask.fillRect(phoneX, phoneY, 70, 70);
+        mask.fillStyle(0xffffff);
+        mask.fillRect(phoneX - 150, phoneY - 250, 160, 700);
 
         const scrollMask = mask.createGeometryMask();
 
@@ -114,7 +118,7 @@ class Shop extends Phaser.Scene {
 
         // Use phone open asset as background
         const phoneBody = this.add.image(phoneX, phoneY, 'phoneUp')
-           // .setScale(0.3)
+        // .setScale(0.3)
 
         // Shop title text
         const title = this.add.text(phoneX - 65, phoneY - 235, "SHOP", {
@@ -125,7 +129,7 @@ class Shop extends Phaser.Scene {
         }).setOrigin(0.5).setDepth(201)
 
         // Close button
-        const closeText = this.add.text(phoneX , phoneY - 235, "X", {
+        const closeText = this.add.text(phoneX, phoneY - 235, "X", {
             fontSize: "22px",
             color: "#ff6666",
             fontStyle: "bold",
@@ -139,15 +143,44 @@ class Shop extends Phaser.Scene {
             this.closeShop()
         })
 
+        const scrollNext = this.add.text(phoneX + 12, phoneY - 85, ">", {
+            fontSize: "22px",
+            color: "#ffffff",
+            fontStyle: "bold",
+            fontFamily: 'monospace'
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .setDepth(999)
+
+        scrollNext.on("pointerdown", () => {
+            this.scrollRight()
+        })
+
+
+        const scrollPrev = this.add.text(phoneX - 142, phoneY - 85, "<", {
+            fontSize: "22px",
+            color: "#ffffff",
+            fontStyle: "bold",
+            fontFamily: 'monospace'
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .setDepth(999)
+
+        scrollPrev.on("pointerdown", () => {
+            this.scrollLeft()
+        })
+
         // Shop buttons
         this.shopButtons = []
 
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
-            { key: "high",  icon: "high",  x: phoneX - 105, y: phoneY - 180 },
-            { key: "crack", icon: "crack", x: phoneX - 25, y: phoneY - 180 },
-            { key: "trip",  icon: "trip",  x: phoneX - 105, y: phoneY - 100 },
-            { key: "meds",  icon: "meds",  x: phoneX - 25, y: phoneY - 100 }
+            { key: "high", icon: "high", x: phoneX - 65, y: phoneY - 145 },
+            { key: "crack", icon: "crack", x: phoneX + 95, y: phoneY - 145 },
+            { key: "trip", icon: "trip", x: phoneX + 255, y: phoneY - 145 },
+            { key: "meds", icon: "meds", x: phoneX + 415, y: phoneY - 145 }
         ];
         /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
         { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
@@ -156,17 +189,18 @@ class Shop extends Phaser.Scene {
     ]*/
 
         buttonData.forEach((data, index) => {
-            const button = this.add.rectangle(data.x, data.y, 65, 65, 0x00aa00)
+            const button = this.add.rectangle(data.x, data.y, 125, 125, 0x00aa00)
                 .setStrokeStyle(2, 0xffffff)
                 .setInteractive({ useHandCursor: true })
                 .setDepth(201);
+                
 
             // added icons
             let icon = null;
             if (data.icon) {
                 icon = this.add.image(data.x, data.y, data.icon)
-                    .setScale(4.5)
-                    .setDepth(202);
+                    .setScale(9.5)
+                    .setDepth(102);
 
                 // gray out unlocked icons
                 icon.setTint(0x555555);
@@ -188,6 +222,7 @@ class Shop extends Phaser.Scene {
             }).setOrigin(0.5).setDepth(201).setVisible(false); // Start hidden
 
             button.on("pointerdown", () => {
+                if ((this.shopScreen.x + button.x) >= phoneX - 150 && (this.shopScreen.x + button.x) <= phoneX)
                 this.buyItem(index, data.key, icon);
             });
 
@@ -198,6 +233,7 @@ class Shop extends Phaser.Scene {
                 key: data.key,
                 bought: false
             });
+
         });
 
         //Okay this was somewhat new to me but a container is really OP, it works kinda like an 
@@ -225,14 +261,15 @@ class Shop extends Phaser.Scene {
             phoneBody,
             title,
             closeText,
-            ...this.shopButtons.flatMap(item => [item.button, item.icon].filter(Boolean))
-        ])
-        
-        this.shopScreen.add([
-            ...this.shopButtons.flatMap(item => [item.button, item.icon].filter(Boolean))
+            scrollNext,
+            scrollPrev
         ])
 
-        this.shopScreen.setMask(mask);
+        this.shopScreen.add([
+            ...this.shopButtons.flatMap(item => [item.button, item.icon, item.label].filter(Boolean))
+        ])
+
+        this.shopScreen.setMask(scrollMask);
         this.shopContainer.setScale(0);
     }
 
@@ -245,6 +282,7 @@ class Shop extends Phaser.Scene {
 
         this.closedPhone.setVisible(false)
         this.shopContainer.setVisible(true)
+        this.shopScreen.setVisible(true)
 
         // Show labels ONLY after the scale animation completes
         this.tweens.add({
@@ -287,6 +325,38 @@ class Shop extends Phaser.Scene {
                 this.closedPhone.setVisible(true)
             }
         })
+    }
+
+    scrollRight() {
+        if (this.scrollVal < 3 && !this.scrollTweens) {
+            console.log(this.scrollVal)
+            this.scrollVal++;
+            this.scrollTweens = this.tweens.add({
+                targets: [this.shopScreen],
+                x: '-=161',
+                duration: 400,
+                ease: "Cubic.easeInOut",
+                onComplete: () => {
+                    this.scrollTweens = null;
+                }
+            })
+
+        }
+    }
+
+    scrollLeft() {
+        if (this.scrollVal > 0 && !this.scrollTweens) {
+            this.scrollVal--;
+            this.scrollTweens = this.tweens.add({
+                targets: [this.shopScreen],
+                x: '+=161',
+                duration: 400,
+                ease: "Cubic.easeInOut",
+                onComplete: () => {
+                    this.scrollTweens = null;
+                }
+            })
+        }
     }
 
     //We can use this function to handle the logic for buying items
