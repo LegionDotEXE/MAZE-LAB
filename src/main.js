@@ -34,7 +34,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [
-    Load, TitleScreen, MainUI, GameManager, MiniGame, Shop, Maze
+    Load, CursorScene, TitleScreen, MainUI, GameManager, MiniGame, Shop, Maze
   ]
 };
 
