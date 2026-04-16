@@ -18,11 +18,13 @@ class MainUI extends Phaser.Scene {
         this.initConfig();
         this.initState();
 
+        // Scene References 
         this.Maze = game.scene.getScene('mazeScene');
+        this.gameManager = game.scene.getScene('GameManager');
 
         // Temporary title text, you can remove it.
         // Using temp title text to display money, thank you goat       
-        this.add.text(20, 20, 'Money:', {
+        this.moneyUI = this.add.text(20, 20, 'Money:', {
             font: '16px Arial',
             fill: '#ffffff'
         });
@@ -57,6 +59,11 @@ class MainUI extends Phaser.Scene {
         this.selectedDrug = null;
         this.dragSource = null;
         this.dragGhost = null;
+    }
+
+    // For the purposes of updating the money - Ryle
+    update() {
+        this.moneyUI.setText(`Money: ${this.gameManager.money}`);
     }
 
     createDrugPack() {

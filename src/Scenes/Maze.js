@@ -79,6 +79,7 @@ class Maze extends Phaser.Scene {
         this.TILEWIDTH = 16;
         this.TILEHEIGHT = 16;
         this.gameManager = game.scene.getScene('GameManager');
+        this.drugUI = game.scene.getScene('MainUI');
     }
 
     create() {
@@ -161,9 +162,6 @@ class Maze extends Phaser.Scene {
             loop: true
         });
 
-    }
-
-    update() {
     }
 
     tileXtoWorld(tileX) {
