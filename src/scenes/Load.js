@@ -33,7 +33,8 @@ class Load extends Phaser.Scene{
         this.load.image("Ptrip", "Ptrip.png");
         this.load.image("meds", "meds.png");
 
-
+        this.load.json('drugData', '../lib/drugs.json');   
+        
         // Load tilemap information
         this.load.image("maze_tiles", "tileset_full.png");  //tileset
         this.load.tilemapTiledJSON("TestingMaze", "Maze.tmj");   // JSON (tmj) tilemap
@@ -41,6 +42,9 @@ class Load extends Phaser.Scene{
         // NEW: Load phone assets for shop UI (from earlier branch)
         this.load.image("phone_closed", "phone_closed.png");
         this.load.image("phone_open", "phone_open.png");
+
+        //title screen logo
+        this.load.image("title_logo", "title.png");
     }
 
     create(){
@@ -52,11 +56,13 @@ class Load extends Phaser.Scene{
         this.scene.launch('ShopScene')
         this.scene.launch('MiniGame')
         this.scene.launch("MainUI");
+        this.scene.launch('TitleScreen');
         this.scene.launch('CursorScene');
         this.scene.bringToTop('CursorScene');
 
         this.scene.moveBelow('ShopScene', 'mazeScene') //moves the maze scene to be below the shop scene
         this.scene.bringToTop('MainUI') //moves the maze scene to be below the shop scene
+        this.scene.bringToTop('TitleScreen')
     }
 
 }

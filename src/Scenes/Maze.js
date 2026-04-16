@@ -147,7 +147,7 @@ class Maze extends Phaser.Scene {
         // health bar goes down over time - taylor
 
         this.healthDeplete = this.time.addEvent({
-            delay: 500,
+            delay: 1000,
             callback: () => {
                 const isEmpty = this.HP.decrease(1 * this.activeCharacter.getHealthDrainMultiplier());
                 if (isEmpty) {

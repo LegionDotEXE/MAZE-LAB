@@ -17,6 +17,7 @@
 
 const config = {
   type: Phaser.AUTO,
+  parent: 'game-container',
   width: 800,
   height: 600,
   backgroundColor: '#1a1a24',
@@ -33,7 +34,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [
-    Load, MainUI, GameManager, MiniGame, Shop, Maze, CursorScene
+    Load, TitleScreen, MainUI, GameManager, MiniGame, Shop, Maze
   ]
 };
 
