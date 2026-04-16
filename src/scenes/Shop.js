@@ -77,8 +77,8 @@ class Shop extends Phaser.Scene {
     }
 
     createShopUI() {
-        const phoneX = 500
-        const phoneY = 300
+        const phoneX = 300
+        const phoneY = 325
 
         // This creates a container to hold all shop UI elements
         this.shopContainer = this.add.container(0, 0).setDepth(200)
@@ -103,19 +103,19 @@ class Shop extends Phaser.Scene {
         */
 
         // Use phone open asset as background
-        const phoneBody = this.add.image(phoneX, phoneY, 'phone_open')
-            .setScale(0.3)
+        const phoneBody = this.add.image(phoneX, phoneY, 'phoneUp')
+           // .setScale(0.3)
 
         // Shop title text
-        const title = this.add.text(phoneX, phoneY - 120, "SHOP", {
+        const title = this.add.text(phoneX - 65, phoneY - 235, "SHOP", {
             fontSize: "22px",
-            color: "#000000",
+            color: "#ffffff",
             fontStyle: "bold",
             fontFamily: 'monospace'
         }).setOrigin(0.5).setDepth(201)
 
         // Close button
-        const closeText = this.add.text(phoneX + 60, phoneY - 120, "X", {
+        const closeText = this.add.text(phoneX , phoneY - 235, "X", {
             fontSize: "22px",
             color: "#ff6666",
             fontStyle: "bold",
@@ -134,10 +134,10 @@ class Shop extends Phaser.Scene {
 
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
-            { key: "high",  icon: "high",  x: phoneX - 35, y: phoneY - 50 },
-            { key: "crack", icon: "crack", x: phoneX + 40, y: phoneY - 50 },
-            { key: "trip",  icon: "trip",  x: phoneX - 35, y: phoneY + 50 },
-            { key: "meds",  icon: "meds",  x: phoneX + 40, y: phoneY + 50 }
+            { key: "high",  icon: "high",  x: phoneX - 105, y: phoneY - 180 },
+            { key: "crack", icon: "crack", x: phoneX - 25, y: phoneY - 180 },
+            { key: "trip",  icon: "trip",  x: phoneX - 105, y: phoneY - 100 },
+            { key: "meds",  icon: "meds",  x: phoneX - 25, y: phoneY - 100 }
         ];
             /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
             { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
