@@ -60,8 +60,8 @@ class Load extends Phaser.Scene{
         this.scene.launch('CursorScene');
         this.scene.bringToTop('CursorScene');
 
-        this.scene.moveBelow('ShopScene', 'mazeScene') //moves the maze scene to be below the shop scene
-        this.scene.bringToTop('MainUI') //moves the maze scene to be below the shop scene
+        this.scene.moveAbove('ShopScene', 'mainUI') //moves the maze scene to be below the shop scene
+        this.scene.bringToTop('MainUI') 
         this.scene.bringToTop('TitleScreen')
     }
 

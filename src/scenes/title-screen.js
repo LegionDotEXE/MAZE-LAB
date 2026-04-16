@@ -5,6 +5,9 @@ class TitleScreen extends Phaser.Scene {
     }
 
     create() {
+        // Fixed issue with phone still showing above the title screen
+        this.scene.bringToTop('TitleScreen');
+
         const { width, height } = this.cameras.main;
 
         this.add.rectangle(0, 0, width, height, 0x0b0b17, 0.95).setOrigin(0);

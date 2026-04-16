@@ -15,6 +15,9 @@ class Shop extends Phaser.Scene {
         this.load.image('trip', 'assets/trip.png');
         this.load.image('meds', 'assets/meds.png');
 
+        // Added this line here to fix phone layering issue
+        this.scene.bringToTop('ShopScene');
+
         // Track whether shop is open
         this.shopOpen = false
         this.DragSystemUI = game.scene.getScene('MainUI');
@@ -22,7 +25,7 @@ class Shop extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
 
         // Added this line here to fix phone layering issue
-        this.scene.bringToTop('ShopScene');
+        //this.scene.bringToTop('ShopScene');
 
         // -----------------------------
         // SMALL PHONE ICON (closed state)
@@ -39,7 +42,8 @@ class Shop extends Phaser.Scene {
         */
 
         // Phone sprite using asset
-        this.closedPhone = this.add.image(700, 480, 'phone_closed')
+        //this.closedPhone = this.add.image(400, 480, 'phone_closed')
+         this.closedPhone = this.add.image(70, 520, 'phone_closed')
             .setInteractive({ useHandCursor: true })
             .setDepth(100)      
             .setScale(0.4)
