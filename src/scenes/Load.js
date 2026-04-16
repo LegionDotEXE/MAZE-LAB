@@ -38,6 +38,7 @@ class Load extends Phaser.Scene{
         
         // Load tilemap information
         this.load.image("maze_tiles", "tileset_full.png");  //tileset
+        this.load.image("new_maze_tiles", "mazetiles32.png");  //tileset
         this.load.tilemapTiledJSON("TestingMaze", "Maze.tmj");   // JSON (tmj) tilemap
 
         // NEW: Load phone assets for shop UI (from earlier branch)
