@@ -18,6 +18,8 @@ class MainUI extends Phaser.Scene {
         this.initConfig();
         this.initState();
 
+        this.Maze = game.scene.getScene('mazeScene');
+
         // Temporary title text, you can remove it.
         // Using temp title text to display money, thank you goat       
         this.add.text(20, 20, 'Money:', {
@@ -111,10 +113,13 @@ class MainUI extends Phaser.Scene {
                     sourceContainer.swapDrug(container);
                 }
 
+                this.Maze.activeCharacter.activateDrugs(container.drugData.id);
+
                 this.selectedDrug.clearTint();
                 this.selectedDrug = null;
             });
         });
+
     }
 
     createShop() {
@@ -159,7 +164,6 @@ class MainUI extends Phaser.Scene {
         // If the drug is already bought, return
         if (drug.bought) return;
 
-        console.log(drug.texture);
         // Find the first empty slot in the drug pack
         const emptySlot = this.getFirstEmptyContainer(this.drugSlots);
 

@@ -130,6 +130,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 
         // toggle on
         drug.active = true;
+        console.log(`${key} on`)
         this.activeDrugs.push(drug);
 
     }
@@ -330,7 +331,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 // movement state classes
 class MoveState extends State {
     enter(character, path) {
-        console.log("moving")
+        //console.log("moving")
         //animation for moving
         if (path) {
             character.moveCharacter(character, path)
@@ -347,7 +348,7 @@ class MoveState extends State {
 class ThinkingState extends State {
     enter(character) {
         //animation for thinking
-        console.log("thinking");
+        //console.log("thinking");
         if (character.activeTweens) {
             character.activeTweens.pause();
         }
