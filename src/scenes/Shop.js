@@ -161,12 +161,23 @@ class Shop extends Phaser.Scene {
                 // gray out unlocked icons
                 icon.setTint(0x555555);
             }
+            
+            /*
             const label = this.add.text(data.x, data.y, data.key, {
                 fontSize: "11px",
                 color: "#000000",
                 align: "center",
                 wordWrap: { width: 70 }
             }).setOrigin(0.5).setDepth(201)
+            */
+
+
+            const label = this.add.text(data.x, data.y, data.key, {
+                fontSize: "11px",
+                color: "#000000",
+                align: "center",
+                wordWrap: { width: 70 }
+            }).setOrigin(0.5).setDepth(201).setVisible(false); // Start hidden
 
             button.on("pointerdown", () => {
                 this.buyItem(index, data.key, icon);
@@ -175,6 +186,7 @@ class Shop extends Phaser.Scene {
             this.shopButtons.push({
                 button,
                 icon,
+                label, // Store reference to the label
                 key: data.key,
                 bought: false
             });
@@ -200,6 +212,7 @@ class Shop extends Phaser.Scene {
         ])
         */
 
+        // Add only the core UI elements
         this.shopContainer.add([
             phoneBody,
             title,
@@ -207,7 +220,6 @@ class Shop extends Phaser.Scene {
             ...this.shopButtons.flatMap(item => [item.button, item.icon].filter(Boolean))
         ])
 
-        // Optional: start scaled down so it can animate open
         this.shopContainer.setScale(0)
     }
     
@@ -221,12 +233,20 @@ class Shop extends Phaser.Scene {
         this.closedPhone.setVisible(false)
         this.shopContainer.setVisible(true)
 
+        // Show labels ONLY after the scale animation completes
         this.tweens.add({
             targets: this.shopContainer,
             scaleX: 1,
             scaleY: 1,
             duration: 200,
-            ease: "Cubic.easeInOut"
+            ease: "Cubic.easeInOut",
+            onComplete: () => {
+                this.shopButtons.forEach(item => {
+                    if (item.label) {
+                        item.label.setVisible(true);
+                    }
+                });
+            }
         })
     }
 
@@ -235,6 +255,13 @@ class Shop extends Phaser.Scene {
         this.shopOpen = false
 
         this.sound.play("PhoneClose")
+
+        // Hide labels IMMEDIATELY when closing starts, so they don't linger during shrink
+        this.shopButtons.forEach(item => {
+            if (item.label) {
+                item.label.setVisible(false);
+            }
+        });
 
         this.tweens.add({
             targets: this.shopContainer,
