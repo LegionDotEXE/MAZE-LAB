@@ -56,6 +56,13 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 
         // drug array
         this.activeDrugs = [];
+<<<<<<< HEAD
+=======
+
+        // sprite cycling
+        this.spriteTimer = 0;
+        this.spriteIndex = 0;
+>>>>>>> main
       
         //this.Path = path;
         this.mapref = map;
@@ -122,9 +129,15 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             return;
         }
 
+<<<<<<< HEAD
         // max 2 drugs
         if (this.activeDrugs.length >= 2) {
             console.log("max 2 drugs only");
+=======
+        // max 3 drugs
+        if (this.activeDrugs.length >= 3) {
+            console.log("max 3 drugs only");
+>>>>>>> main
             return;
         }
 
@@ -141,8 +154,14 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         // specify drug
         this.activeDrugs = this.activeDrugs.filter(d => d !== drug);
         this.spriteIndex = 0; 
+<<<<<<< HEAD
     }
     
+=======
+
+        console.log(`${drug.key} af!`);
+    }
+>>>>>>> main
 
     // update
     updateDrugs(time, delta) {
@@ -175,17 +194,23 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 
     // set drugs qualities
     applyDrugEffects() {
+<<<<<<< HEAD
         // reset values
         this.healthDrainMultiplier = 1;
+=======
+>>>>>>> main
         this.speed = this.baseStats.speed;
         this.thinkingTime = this.baseStats.thinkingTime;
         this.completeMoney = this.baseStats.completeMoney;
         this.healMultiplier = 1;
         let speedMultiplier = 1;
+<<<<<<< HEAD
 
         // combo tracking
         const keys = this.activeDrugs.map(d => d.key).sort().join("");
         this.currentCombo = this.activeDrugs.length === 2 ? keys : null;
+=======
+>>>>>>> main
         
 
         this.activeDrugs.forEach(drug => {
@@ -199,7 +224,11 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
                     break;
 
                 case "trip":
+<<<<<<< HEAD
                     this.completeMoney = 3;
+=======
+                    this.completeMoney = 5;
+>>>>>>> main
                     break;
 
                 case "meds":
@@ -209,6 +238,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             }
         });
 
+<<<<<<< HEAD
         // combo effects
         switch (this.currentCombo) {
 
@@ -257,6 +287,8 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             speedMultiplier *= 10; 
         }
 
+=======
+>>>>>>> main
         // speed check
         this.currentSpeedMultiplier = speedMultiplier;
         this.updateTweenSpeed();
@@ -267,22 +299,33 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+<<<<<<< HEAD
     updateSprite() {
         const count = this.activeDrugs.length;
 
         // no drugs
         if (count === 0) {
+=======
+    updateSprite(delta) {
+        // no drugs
+        if (this.activeDrugs.length === 0) {
+>>>>>>> main
             this.setTexture(this.baseTexture);
             return;
         }
 
         // one drug
+<<<<<<< HEAD
         if (count === 1) {
+=======
+        if (this.activeDrugs.length === 1) {
+>>>>>>> main
             const drug = this.activeDrugs[0];
             this.setTexture(this.drugSprites[drug.key]);
             return;
         }
 
+<<<<<<< HEAD
         // two drug combos
         if (count === 2) {
             const keys = this.activeDrugs.map(d => d.key).sort().join("");
@@ -314,6 +357,27 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             }
         }
     }
+=======
+        // multiple drugs
+        this.spriteTimer += delta;
+        let interval = this.activeDrugs.length === 2 ? 500 : 250;
+
+        if (this.spriteTimer >= interval) {
+            this.spriteTimer = 0;
+            this.spriteIndex = (this.spriteIndex + 1) % this.activeDrugs.length;
+        }
+
+        // safety clamp
+        if (this.spriteIndex >= this.activeDrugs.length) {
+            this.spriteIndex = 0;
+        }
+
+        const currentDrug = this.activeDrugs[this.spriteIndex];
+        if (!currentDrug) return; 
+        this.setTexture(this.drugSprites[currentDrug.key]);
+    }
+
+>>>>>>> main
     // extra health gain
     getHealMultiplier() {
         return this.healMultiplier || 1;
@@ -321,7 +385,11 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 
     // extra health drain per drug
     getHealthDrainMultiplier() {
+<<<<<<< HEAD
         return this.healthDrainMultiplier || Math.max(2, this.activeDrugs.length);
+=======
+        return Math.max(2, this.activeDrugs.length);
+>>>>>>> main
     }
 
 }
