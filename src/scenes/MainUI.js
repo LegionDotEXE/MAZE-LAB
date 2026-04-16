@@ -212,7 +212,7 @@ class MainUI extends Phaser.Scene {
 
         // Create a new sprite for the drug in the pack and make it draggable
         const packSprite = this.add.sprite(emptySlot.x, emptySlot.y, drug.texture)
-            .setScale(2)
+            .setScale(3.5)
             .setOrigin(0, 0.5)
             .setInteractive({ useHandCursor: true });
 

@@ -86,15 +86,14 @@ class Shop extends Phaser.Scene {
         const phoneY = 325
 
         const mask = this.make.graphics();
-
         mask.fillStyle(0xffffff);
         mask.fillRect(phoneX - 150, phoneY - 250, 160, 700);
-
         const scrollMask = mask.createGeometryMask();
 
         // This creates a container to hold all shop UI elements
         this.shopContainer = this.add.container(0, 0).setDepth(200)
 
+        // This container ONLY contains the buttons
         this.shopScreen = this.add.container(0, 0).setDepth(200)
 
         //This will most likely be replaced with a custom sprite but for now we can just use shapes to make a phone UI
@@ -144,14 +143,13 @@ class Shop extends Phaser.Scene {
         })
 
         const scrollNext = this.add.text(phoneX + 12, phoneY - 85, ">", {
-            fontSize: "22px",
+            fontSize: "25px",
             color: "#ffffff",
             fontStyle: "bold",
             fontFamily: 'monospace'
         })
             .setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .setDepth(999)
+            .setInteractive({ useHandCursor: true }).setDepth(999)
 
         scrollNext.on("pointerdown", () => {
             this.scrollRight()
@@ -159,14 +157,13 @@ class Shop extends Phaser.Scene {
 
 
         const scrollPrev = this.add.text(phoneX - 142, phoneY - 85, "<", {
-            fontSize: "22px",
+            fontSize: "25px",
             color: "#ffffff",
             fontStyle: "bold",
             fontFamily: 'monospace'
         })
             .setOrigin(0.5)
-            .setInteractive({ useHandCursor: true })
-            .setDepth(999)
+            .setInteractive({ useHandCursor: true }).setDepth(999)
 
         scrollPrev.on("pointerdown", () => {
             this.scrollLeft()
@@ -189,7 +186,7 @@ class Shop extends Phaser.Scene {
     ]*/
 
         buttonData.forEach((data, index) => {
-            const button = this.add.rectangle(data.x, data.y, 125, 125, 0x00aa00)
+            const button = this.add.rectangle(data.x, data.y, 110, 110, 0x00aa00)
                 .setStrokeStyle(2, 0xffffff)
                 .setInteractive({ useHandCursor: true })
                 .setDepth(201);
@@ -199,11 +196,10 @@ class Shop extends Phaser.Scene {
             let icon = null;
             if (data.icon) {
                 icon = this.add.image(data.x, data.y, data.icon)
-                    .setScale(9.5)
+                    .setScale(8.5)
                     .setDepth(102);
 
-                // gray out unlocked icons
-                icon.setTint(0x555555);
+                
             }
 
             /*
@@ -214,16 +210,19 @@ class Shop extends Phaser.Scene {
                 wordWrap: { width: 70 }
             }).setOrigin(0.5).setDepth(201)
             */
-            const label = this.add.text(data.x, data.y, data.key, {
-                fontSize: "11px",
+            const label = this.add.text(data.x, data.y + 55, data.key, {
+                fontSize: "18px",
                 color: "#000000",
+                fontStyle: 'bold',
                 align: "center",
                 wordWrap: { width: 70 }
             }).setOrigin(0.5).setDepth(201).setVisible(false); // Start hidden
 
             button.on("pointerdown", () => {
-                if ((this.shopScreen.x + button.x) >= phoneX - 150 && (this.shopScreen.x + button.x) <= phoneX)
-                this.buyItem(index, data.key, icon);
+                // Used AI for the below line of code
+                if ((this.shopScreen.x + button.x) >= phoneX - 150 && (this.shopScreen.x + button.x) <= phoneX){
+                    this.buyItem(index, data.key, icon);
+                }
             });
 
             this.shopButtons.push({
@@ -384,7 +383,7 @@ class Shop extends Phaser.Scene {
 
         // unlocked means gray
         if (icon) {
-            icon.clearTint();
+            icon.setTint(0x555555);
         }
 
         item.button.disableInteractive();
