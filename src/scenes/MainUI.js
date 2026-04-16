@@ -7,6 +7,11 @@ class MainUI extends Phaser.Scene {
         this.load.json('drugData', 'lib/Drugs.json');
         this.load.image('Drug1', 'assets/DrugT1.png');
         this.load.image('Drug2', 'assets/DrugT2.png');
+        
+        this.load.image('high', 'assets/high.png');
+        this.load.image('crack', 'assets/crack.png');
+        this.load.image('trip', 'assets/trip.png');
+        this.load.image('meds', 'assets/meds.png');
     }
 
     create() {
@@ -14,6 +19,7 @@ class MainUI extends Phaser.Scene {
         this.initState();
 
         // Temporary title text, you can remove it.
+        // Using temp title text to display money, thank you goat       
         this.add.text(20, 20, 'Money:', {
             font: '16px Arial',
             fill: '#ffffff'
@@ -22,7 +28,8 @@ class MainUI extends Phaser.Scene {
         this.createDrugPack();
         this.createPackSlots();
         this.createTargetBoxes();
-        this.createShop();
+        // hiding shop
+        //this.createShop();
 
         // Global input handling for dragging and dropping drugs
         this.bindGlobalInput();
@@ -152,6 +159,7 @@ class MainUI extends Phaser.Scene {
         // If the drug is already bought, return
         if (drug.bought) return;
 
+        console.log(drug.texture);
         // Find the first empty slot in the drug pack
         const emptySlot = this.getFirstEmptyContainer(this.drugSlots);
 
@@ -184,9 +192,10 @@ class MainUI extends Phaser.Scene {
 
         // Update drug state to bought and show sold out text in the shop, 
         // if want to change to "Owned", just chage it in json file
-        drug.packSprite = packSprite;
+        /* drug.packSprite = packSprite;
         drug.bought = true;
-        drug.soldOutText.setVisible(true);
+        drug.soldOutText.setVisible(true); */
+        // ABOVE IS TEMP COMMENTED OUT
     }
 
     getFirstEmptyContainer(containers) {

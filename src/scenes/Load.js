@@ -33,7 +33,8 @@ class Load extends Phaser.Scene{
         this.load.image("Ptrip", "Ptrip.png");
         this.load.image("meds", "meds.png");
 
-
+        this.load.json('drugData', '../lib/drugs.json');   
+        
         // Load tilemap information
         this.load.image("maze_tiles", "tileset_full.png");  //tileset
         this.load.tilemapTiledJSON("TestingMaze", "Maze.tmj");   // JSON (tmj) tilemap

@@ -2,12 +2,22 @@ class Shop extends Phaser.Scene {
     constructor() {
         super('ShopScene')
     }
-
     create() {
         //this.cameras.main.setBackgroundColor("#2b2b2b")
+        //this.load.json('drugData', 'lib/Drugs.json');
+
+        this.drugs = this.cache.json.get('drugData');
+
+        console.log(this.drugs)
+
+        this.load.image('high', 'assets/high.png');
+        this.load.image('crack', 'assets/crack.png');
+        this.load.image('trip', 'assets/trip.png');
+        this.load.image('meds', 'assets/meds.png');
 
         // Track whether shop is open
         this.shopOpen = false
+        this.DragSystemUI = game.scene.getScene('MainUI');
 
         this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
 
@@ -238,6 +248,16 @@ class Shop extends Phaser.Scene {
 
         // unlock the drug
         window.drugUnlocks[key] = true;
+        const drugObject = this.drugs.find(d => d.id === key);
+        
+        if (drugObject){
+            this.DragSystemUI.buyDrug(drugObject);
+    
+        } else 
+        {
+            console.log("none wtf")
+        }
+
 
         // unlocked means gray
         if (icon) {
