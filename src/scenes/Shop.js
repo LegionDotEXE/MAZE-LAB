@@ -77,8 +77,8 @@ class Shop extends Phaser.Scene {
     }
 
     createShopUI() {
-        const phoneX = 500
-        const phoneY = 300
+        const phoneX = 300
+        const phoneY = 325
 
         // This creates a container to hold all shop UI elements
         this.shopContainer = this.add.container(0, 0).setDepth(200)
@@ -103,8 +103,8 @@ class Shop extends Phaser.Scene {
         */
 
         // Use phone open asset as background
-        const phoneBody = this.add.image(phoneX, phoneY, 'phone_open')
-            .setScale(0.3)
+        const phoneBody = this.add.image(phoneX, phoneY, 'phoneUp')
+           // .setScale(0.3)
 
         // Shop title text
         const title = this.add.text(phoneX, phoneY - 120, "SHOP", {

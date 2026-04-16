@@ -11,7 +11,8 @@ class Load extends Phaser.Scene{
         this.load.image('buttonUp', './images/ButtonUp.png');
         this.load.image('blackScreen', './images/blackscreen4.png');
         this.load.image('monitor', './images/Monitor.png');
-        
+        this.load.image("phoneUp", "./images/PhoneUp.png");
+
         // lobster sprite
         this.load.image("Lobster", "./sprites/Lobster16.png");
         this.load.image("LobsterHigh", "./sprites/LobsterHigh.png");
@@ -24,6 +25,7 @@ class Load extends Phaser.Scene{
         this.load.image("LobsterCT", "./sprites/LobsterCT.png");
         this.load.image("LobsterCM", "./sprites/LobsterCM.png");
         this.load.image("LobsterTM", "./sprites/LobsterTM.png");
+        
 
         // drug icons
         this.load.image("high", "high.png");
