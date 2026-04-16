@@ -268,6 +268,18 @@ class Maze extends Phaser.Scene {
         }
 
         if (tile.properties.THINKING) {
+
+            // detecting tile for combos
+            if (this.activeCharacter.currentCombo === "highmeds") {
+                this.activeCharacter.onThinkingTile = true;
+
+                this.time.delayedCall(500, () => {
+                    this.activeCharacter.onThinkingTile = false;
+                });
+
+                return; 
+            }
+
             if (this.activeCharacter.statemachine.state === "Moving") {
                 tile.properties.THINKING = false;
                 this.activeCharacter.statemachine.transition("Thinking");
