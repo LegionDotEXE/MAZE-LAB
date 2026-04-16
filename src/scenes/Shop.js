@@ -134,10 +134,10 @@ class Shop extends Phaser.Scene {
 
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
-            { key: "high",  icon: "high",  x: phoneX - 55, y: phoneY - 50 },
-            { key: "crack", icon: "crack", x: phoneX + 55, y: phoneY - 50 },
-            { key: "trip",  icon: "trip",  x: phoneX - 55, y: phoneY + 50 },
-            { key: "meds",  icon: "meds",  x: phoneX + 55, y: phoneY + 50 }
+            { key: "high",  icon: "high",  x: phoneX - 35, y: phoneY - 50 },
+            { key: "crack", icon: "crack", x: phoneX + 40, y: phoneY - 50 },
+            { key: "trip",  icon: "trip",  x: phoneX - 35, y: phoneY + 50 },
+            { key: "meds",  icon: "meds",  x: phoneX + 40, y: phoneY + 50 }
         ];
             /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
             { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
@@ -155,7 +155,7 @@ class Shop extends Phaser.Scene {
             let icon = null;
             if (data.icon) {
                 icon = this.add.image(data.x, data.y, data.icon)
-                    .setScale(5)
+                    .setScale(4.5)
                     .setDepth(202);
 
                 // gray out unlocked icons
