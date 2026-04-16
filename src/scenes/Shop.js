@@ -155,7 +155,7 @@ class Shop extends Phaser.Scene {
                 // gray out unlocked icons
                 icon.setTint(0x555555);
             }
-            const label = this.add.text(data.x, data.y, data.label, {
+            const label = this.add.text(data.x, data.y, data.key, {
                 fontSize: "11px",
                 color: "#000000",
                 align: "center",

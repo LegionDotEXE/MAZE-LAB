@@ -42,7 +42,7 @@ class MainUI extends Phaser.Scene {
     }
 
     initConfig() {
-        this.maxSlot = 3;
+        this.maxSlot = 4;
         this.slotSpacing = 100;
         this.slotPadding = 20;
         this.packHeight = 120;
@@ -110,7 +110,25 @@ class MainUI extends Phaser.Scene {
 
         this.targetBoxes.forEach(container => {
             container.rect.on('pointerdown', () => {
-                if (!this.selectedDrug) return;
+                if (!this.selectedDrug) {
+                    if (container.hasDrug()){
+                        const emptySlot = this.getFirstEmptyContainer(this.drugSlots);
+                        if (!emptySlot) {
+                            this.showSlotFullMessage();
+                            return;
+                        }
+
+                        this.Maze.activeCharacter.activateDrugs(container.drugData.id);
+                        container.sprite.setInteractive({ useHandCursor: true });
+                        emptySlot.setDrug(container.drugData, container.sprite);
+                        container.clearDrug();
+
+                        return;
+
+                    } else {
+                        return;
+                    }
+                }
 
                 const sourceContainer = this.getContainerBySprite(this.selectedDrug);
                 if (!sourceContainer || sourceContainer === container) return;
@@ -118,10 +136,15 @@ class MainUI extends Phaser.Scene {
                 if (!container.hasDrug()) {
                     container.setDrug(sourceContainer.drugData, sourceContainer.sprite);
                     sourceContainer.clearDrug();
+                    container.sprite.disableInteractive();
                 } else {
+                    this.Maze.activeCharacter.activateDrugs(container.drugData.id);
+                    container.sprite.setInteractive({ useHandCursor: true });
+                    sourceContainer.sprite.setInteractive({ useHandCursor: true });
                     sourceContainer.swapDrug(container);
+                    container.sprite.disableInteractive();
                 }
-
+                
                 this.Maze.activeCharacter.activateDrugs(container.drugData.id);
 
                 this.selectedDrug.clearTint();
