@@ -4,6 +4,9 @@ class TitleScreen extends Phaser.Scene {
         super('TitleScreen');
     }
 
+    preload() {
+        // this.load.audio("Press", "../assets/audio/ButtonPress.mp3");
+    }
     create() {
         // Fixed issue with phone still showing above the title screen
         this.scene.bringToTop('TitleScreen');
@@ -41,7 +44,10 @@ class TitleScreen extends Phaser.Scene {
 
         button.on('pointerover', () => button.setTint(0xdddddd));
         button.on('pointerout', () => button.clearTint());
-        button.on('pointerdown', () => button.setTexture('buttonDown'));
+        button.on('pointerdown', () => {
+            this.sound.play("Press");
+            button.setTexture('buttonDown');
+        });
         button.on('pointerup', () => {
             button.setTexture('buttonUp');
             callback();

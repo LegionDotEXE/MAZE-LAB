@@ -70,6 +70,8 @@ class Maze extends Phaser.Scene {
     }
 
     preload() {
+        //this.load.audio("MazeMusic", "../assets/audio/ethicsPendingBGM.wav");
+        // this.load.audio("Static", "../assets/audio/static.mp3");
     }
 
     init() {
@@ -169,6 +171,11 @@ class Maze extends Phaser.Scene {
             loop: true
         });
 
+        // BGM setup
+        this.mazeBGM = this.sound.add("MazeMusic", { loop: true, volume: 0.3 });
+        this.blackBGM = this.sound.add("Static", { loop: true, volume: 1 });
+        this.mazeBGM.play();
+
     }
 
     tileXtoWorld(tileX) {
@@ -252,7 +259,8 @@ class Maze extends Phaser.Scene {
         //to the moving state while it's active
         this.activeCharacter.statemachine.transition("Thinking");
         
-        
+        this.mazeBGM.stop();
+        this.blackBGM.play();
         this.scene.sleep()
     }
     
@@ -265,7 +273,8 @@ class Maze extends Phaser.Scene {
 
         // show goal item
         this.goal.sprite.setVisible(true);
-
+        this.mazeBGM.play();
+        this.blackBGM.stop();
         this.resetCharacter(this.activeCharacter);
     }
 

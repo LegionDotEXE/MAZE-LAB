@@ -14,7 +14,9 @@ class DrugContainer {
             .setStrokeStyle(1, 0xffffff)
             .setInteractive();
     }
-
+    // preload() {
+    //     this.scene.load.audio("Drag", "../assets/audio/Clinking.mp3");
+    // }
     containsPoint(x, y) {
         return Phaser.Geom.Rectangle.Contains(this.rect.getBounds(), x, y);
     }
@@ -31,6 +33,8 @@ class DrugContainer {
         if (sprite) {
             sprite.x = this.x - sprite.displayWidth / 2;
             sprite.y = this.y;
+
+            this.scene.game.sound.play("Drag");
         }
     }
 

@@ -2,6 +2,12 @@ class Shop extends Phaser.Scene {
     constructor() {
         super('ShopScene')
     }
+    // preload() {
+    //     this.load.audio("Pay", "../assets/audio/iphonePay.mp3");
+    //     this.load.audio("PhoneOpen", "../assets/audio/iphoneUnlock.mp3");
+    //     this.load.audio("PhoneClose", "../assets/audio/iphoneLock.mp3");
+    //     this.load.audio("Drag", "../assets/audio/Clinking.mp3");
+    // }
     create() {
         //this.cameras.main.setBackgroundColor("#2b2b2b")
         //this.load.json('drugData', 'lib/Drugs.json');
@@ -210,6 +216,8 @@ class Shop extends Phaser.Scene {
         if (this.shopOpen) return
         this.shopOpen = true
 
+        this.sound.play("PhoneOpen")
+
         this.closedPhone.setVisible(false)
         this.shopContainer.setVisible(true)
 
@@ -225,6 +233,8 @@ class Shop extends Phaser.Scene {
     closeShop() {
         if (!this.shopOpen) return
         this.shopOpen = false
+
+        this.sound.play("PhoneClose")
 
         this.tweens.add({
             targets: this.shopContainer,
@@ -256,7 +266,7 @@ class Shop extends Phaser.Scene {
         
         if (drugObject){
             this.DragSystemUI.buyDrug(drugObject);
-    
+            this.sound.play("Pay");
         } else 
         {
             console.log("none wtf")

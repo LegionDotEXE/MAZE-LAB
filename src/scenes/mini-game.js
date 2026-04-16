@@ -7,6 +7,9 @@ class MiniGame extends Phaser.Scene {
     this.gameManager = game.scene.getScene('GameManager');
     
   }
+  preload() {
+    //  this.load.audio("Press", "../assets/audio/ButtonPress.mp3");
+  }
 
   create() {  
     this.Maze = game.scene.getScene('mazeScene');
@@ -14,6 +17,8 @@ class MiniGame extends Phaser.Scene {
     this.healAmount = 5;
 
     this.button.on('pointerdown', () => {
+      this.sound.play("Press");
+
       if (this.gameManager.battery != 100){
         if (this.Maze.healthDeplete.paused) {
           this.Maze.healthDeplete.paused = false;

@@ -12,6 +12,8 @@ class MainUI extends Phaser.Scene {
         this.load.image('crack', 'assets/crack.png');
         this.load.image('trip', 'assets/trip.png');
         this.load.image('meds', 'assets/meds.png');
+
+        this.load.audio("Drag", "../assets/audio/Clinking.mp3");
     }
 
     create() {
