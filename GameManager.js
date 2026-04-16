@@ -10,6 +10,7 @@ class GameManager extends Phaser.Scene {
     create(){
         this.add.sprite(0, 0, 'background').setOrigin(0, 0).setDepth(-1);
         this.add.sprite(0,50, 'monitor').setDepth(1).setOrigin(0,0)
+
         // drug unlocks
         window.drugUnlocks = {
             high: false,
@@ -17,4 +18,6 @@ class GameManager extends Phaser.Scene {
             trip: false
         };
     }
+
+    
 }

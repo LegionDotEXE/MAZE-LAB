@@ -26,7 +26,11 @@ class Shop extends Phaser.Scene {
 
         // Track whether shop is open
         this.shopOpen = false
+
+        // references to scenes to access variables
         this.DragSystemUI = game.scene.getScene('MainUI');
+        this.MessageUI = game.scene.getScene('MessageUI');
+        this.gameManager = game.scene.getScene('GameManager');
 
         this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
 
@@ -174,10 +178,10 @@ class Shop extends Phaser.Scene {
 
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
-            { key: "high", icon: "high", x: phoneX - 65, y: phoneY - 145 },
-            { key: "crack", icon: "crack", x: phoneX + 95, y: phoneY - 145 },
-            { key: "trip", icon: "trip", x: phoneX + 255, y: phoneY - 145 },
-            { key: "meds", icon: "meds", x: phoneX + 415, y: phoneY - 145 }
+            { key: "high", icon: "high", x: phoneX - 65, y: phoneY - 145, price: 9},
+            { key: "crack", icon: "crack", x: phoneX + 95, y: phoneY - 145, price: 32},
+            { key: "trip", icon: "trip", x: phoneX + 255, y: phoneY - 145, price: 21},
+            { key: "meds", icon: "meds", x: phoneX + 415, y: phoneY - 145, price: 4}
         ];
         /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
         { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
@@ -196,7 +200,7 @@ class Shop extends Phaser.Scene {
             let icon = null;
             if (data.icon) {
                 icon = this.add.image(data.x, data.y, data.icon)
-                    .setScale(8.5)
+                    .setScale(8.5) //max scale is around 9-9.5
                     .setDepth(102);
 
                 
@@ -217,11 +221,26 @@ class Shop extends Phaser.Scene {
                 align: "center",
                 wordWrap: { width: 70 }
             }).setOrigin(0.5).setDepth(201).setVisible(false); // Start hidden
+            
+            const cost = this.add.text(data.x, data.y - 35, `$${data.price}`, {
+                fontSize: "70px",
+                fontStyle: "bold",
+                color: "#0b4400",
+                stroke: "#000000",
+                strokeThickness: 0,
+                //backgroundColor: '#ff00ff',
+                align: "center",
+                wordWrap: { width: 50 }
+            }).setOrigin(0.5).setDepth(202).setVisible(false).setAlpha(0.55); // Start hidden
 
             button.on("pointerdown", () => {
                 // Used AI for the below line of code
                 if ((this.shopScreen.x + button.x) >= phoneX - 150 && (this.shopScreen.x + button.x) <= phoneX){
-                    this.buyItem(index, data.key, icon);
+                    if (this.gameManager.money >= data.price){
+                        this.buyItem(index, data.key, icon, cost, data.price);
+                    } else {
+                        this.MessageUI.errorMessage(`You're too poor`);
+                    }
                 }
             });
 
@@ -229,6 +248,7 @@ class Shop extends Phaser.Scene {
                 button,
                 icon,
                 label, // Store reference to the label
+                cost,
                 key: data.key,
                 bought: false
             });
@@ -265,7 +285,7 @@ class Shop extends Phaser.Scene {
         ])
 
         this.shopScreen.add([
-            ...this.shopButtons.flatMap(item => [item.button, item.icon, item.label].filter(Boolean))
+            ...this.shopButtons.flatMap(item => [item.button, item.icon, item.label, item.cost].filter(Boolean))
         ])
 
         this.shopScreen.setMask(scrollMask);
@@ -294,6 +314,7 @@ class Shop extends Phaser.Scene {
                 this.shopButtons.forEach(item => {
                     if (item.label) {
                         item.label.setVisible(true);
+                        item.cost.setVisible(true);
                     }
                 });
             }
@@ -310,6 +331,7 @@ class Shop extends Phaser.Scene {
         this.shopButtons.forEach(item => {
             if (item.label) {
                 item.label.setVisible(false);
+                 item.cost.setVisible(false);
             }
         });
 
@@ -361,7 +383,7 @@ class Shop extends Phaser.Scene {
     //We can use this function to handle the logic for buying items
     //for now it just changes the button color and text but we can easily expand 
     //this so that it spawns the drugs or whatever we want to add to the game when an item is bought
-    buyItem(index, key, icon) {
+    buyItem(index, key, icon, costLabel, price) {
         const item = this.shopButtons[index];
 
         if (item.bought) return;
@@ -384,6 +406,10 @@ class Shop extends Phaser.Scene {
         // unlocked means gray
         if (icon) {
             icon.setTint(0x555555);
+        }
+        if (costLabel){
+            costLabel.setText(`SOLD!`).setFontSize(45).setColor("#000000");
+            this.gameManager.money -= price;
         }
 
         item.button.disableInteractive();

@@ -26,7 +26,7 @@ class MainUI extends Phaser.Scene {
 
         // Temporary title text, you can remove it.
         // Using temp title text to display money, thank you goat       
-        this.moneyUI = this.add.text(40, 20, 'Money:', {
+        this.moneyUI = this.add.text(660, 20, 'Money:', {
             font: '24px Arial',
             fill: '#ffffff',
             stroke: '#000000',
@@ -66,6 +66,7 @@ class MainUI extends Phaser.Scene {
     }
 
     // For the purposes of updating the money - Ryle
+    // Money is being shown on phone for now
     update() {
         this.moneyUI.setText(`Money: $${this.gameManager.money}`);
     }
