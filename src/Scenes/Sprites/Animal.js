@@ -237,6 +237,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
                 this.completeMoney = 5;
                 this.healthDrainMultiplier = 2;
                 // if we are able to implement wall breaking, here
+                // this could also be the cracked guy with insane HP drain
 
                 break;
 

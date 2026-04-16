@@ -49,16 +49,16 @@ class Shop extends Phaser.Scene {
 
         // Phone sprite using asset
         //this.closedPhone = this.add.image(400, 480, 'phone_closed')
-         this.closedPhone = this.add.image(70, 520, 'phone_closed')
+        this.closedPhone = this.add.image(70, 520, 'phone_closed')
             .setInteractive({ useHandCursor: true })
-            .setDepth(100)      
+            .setDepth(100)
             .setScale(0.4)
-        
+
         // hover effect
         this.closedPhone.on('pointerover', () => {
             this.closedPhone.setTint(0xaaaaaa)
         })
-        
+
         this.closedPhone.on('pointerout', () => {
             this.closedPhone.clearTint()
         })
@@ -67,6 +67,10 @@ class Shop extends Phaser.Scene {
             this.openShop()
         })
 
+        // scrolling variable
+        this.scrollVal = 0;
+        this.scrollTweens = null;
+
         // -----------------------------
         // FULL SHOP PHONE (open state)
         // -----------------------------
@@ -74,14 +78,23 @@ class Shop extends Phaser.Scene {
 
         // Start hidden
         this.shopContainer.setVisible(false)
+        this.shopScreen.setVisible(false)
     }
 
     createShopUI() {
         const phoneX = 300
         const phoneY = 325
 
+        const mask = this.make.graphics();
+        mask.fillStyle(0xffffff);
+        mask.fillRect(phoneX - 150, phoneY - 250, 160, 700);
+        const scrollMask = mask.createGeometryMask();
+
         // This creates a container to hold all shop UI elements
         this.shopContainer = this.add.container(0, 0).setDepth(200)
+
+        // This container ONLY contains the buttons
+        this.shopScreen = this.add.container(0, 0).setDepth(200)
 
         //This will most likely be replaced with a custom sprite but for now we can just use shapes to make a phone UI
         // OLD: replaced with phone_open asset from earlier branch
@@ -104,7 +117,7 @@ class Shop extends Phaser.Scene {
 
         // Use phone open asset as background
         const phoneBody = this.add.image(phoneX, phoneY, 'phoneUp')
-           // .setScale(0.3)
+        // .setScale(0.3)
 
         // Shop title text
         const title = this.add.text(phoneX - 65, phoneY - 235, "SHOP", {
@@ -115,18 +128,45 @@ class Shop extends Phaser.Scene {
         }).setOrigin(0.5).setDepth(201)
 
         // Close button
-        const closeText = this.add.text(phoneX , phoneY - 235, "X", {
+        const closeText = this.add.text(phoneX, phoneY - 235, "X", {
             fontSize: "22px",
             color: "#ff6666",
             fontStyle: "bold",
             fontFamily: 'monospace'
         })
-        .setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
-        .setDepth(201)
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .setDepth(201)
 
         closeText.on("pointerdown", () => {
             this.closeShop()
+        })
+
+        const scrollNext = this.add.text(phoneX + 12, phoneY - 85, ">", {
+            fontSize: "25px",
+            color: "#ffffff",
+            fontStyle: "bold",
+            fontFamily: 'monospace'
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true }).setDepth(999)
+
+        scrollNext.on("pointerdown", () => {
+            this.scrollRight()
+        })
+
+
+        const scrollPrev = this.add.text(phoneX - 142, phoneY - 85, "<", {
+            fontSize: "25px",
+            color: "#ffffff",
+            fontStyle: "bold",
+            fontFamily: 'monospace'
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true }).setDepth(999)
+
+        scrollPrev.on("pointerdown", () => {
+            this.scrollLeft()
         })
 
         // Shop buttons
@@ -134,34 +174,34 @@ class Shop extends Phaser.Scene {
 
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
-            { key: "high",  icon: "high",  x: phoneX - 105, y: phoneY - 180 },
-            { key: "crack", icon: "crack", x: phoneX - 25, y: phoneY - 180 },
-            { key: "trip",  icon: "trip",  x: phoneX - 105, y: phoneY - 100 },
-            { key: "meds",  icon: "meds",  x: phoneX - 25, y: phoneY - 100 }
+            { key: "high", icon: "high", x: phoneX - 65, y: phoneY - 145 },
+            { key: "crack", icon: "crack", x: phoneX + 95, y: phoneY - 145 },
+            { key: "trip", icon: "trip", x: phoneX + 255, y: phoneY - 145 },
+            { key: "meds", icon: "meds", x: phoneX + 415, y: phoneY - 145 }
         ];
-            /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
-            { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
-            { label: "Upgrade 3", x: phoneX - 40, y: phoneY + 50 },
-            { label: "Upgrade 4", x: phoneX + 40, y: phoneY + 50 }
-        ]*/
+        /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
+        { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
+        { label: "Upgrade 3", x: phoneX - 40, y: phoneY + 50 },
+        { label: "Upgrade 4", x: phoneX + 40, y: phoneY + 50 }
+    ]*/
 
         buttonData.forEach((data, index) => {
-            const button = this.add.rectangle(data.x, data.y, 65, 65, 0x00aa00)
+            const button = this.add.rectangle(data.x, data.y, 110, 110, 0x00aa00)
                 .setStrokeStyle(2, 0xffffff)
                 .setInteractive({ useHandCursor: true })
                 .setDepth(201);
+                
 
             // added icons
             let icon = null;
             if (data.icon) {
                 icon = this.add.image(data.x, data.y, data.icon)
-                    .setScale(4.5)
-                    .setDepth(202);
+                    .setScale(8.5)
+                    .setDepth(102);
 
-                // gray out unlocked icons
-                icon.setTint(0x555555);
+                
             }
-            
+
             /*
             const label = this.add.text(data.x, data.y, data.key, {
                 fontSize: "11px",
@@ -170,17 +210,19 @@ class Shop extends Phaser.Scene {
                 wordWrap: { width: 70 }
             }).setOrigin(0.5).setDepth(201)
             */
-
-
-            const label = this.add.text(data.x, data.y, data.key, {
-                fontSize: "11px",
+            const label = this.add.text(data.x, data.y + 55, data.key, {
+                fontSize: "18px",
                 color: "#000000",
+                fontStyle: 'bold',
                 align: "center",
                 wordWrap: { width: 70 }
             }).setOrigin(0.5).setDepth(201).setVisible(false); // Start hidden
 
             button.on("pointerdown", () => {
-                this.buyItem(index, data.key, icon);
+                // Used AI for the below line of code
+                if ((this.shopScreen.x + button.x) >= phoneX - 150 && (this.shopScreen.x + button.x) <= phoneX){
+                    this.buyItem(index, data.key, icon);
+                }
             });
 
             this.shopButtons.push({
@@ -190,6 +232,7 @@ class Shop extends Phaser.Scene {
                 key: data.key,
                 bought: false
             });
+
         });
 
         //Okay this was somewhat new to me but a container is really OP, it works kinda like an 
@@ -217,12 +260,18 @@ class Shop extends Phaser.Scene {
             phoneBody,
             title,
             closeText,
-            ...this.shopButtons.flatMap(item => [item.button, item.icon].filter(Boolean))
+            scrollNext,
+            scrollPrev
         ])
 
-        this.shopContainer.setScale(0)
+        this.shopScreen.add([
+            ...this.shopButtons.flatMap(item => [item.button, item.icon, item.label].filter(Boolean))
+        ])
+
+        this.shopScreen.setMask(scrollMask);
+        this.shopContainer.setScale(0);
     }
-    
+
 
     openShop() {
         if (this.shopOpen) return
@@ -232,10 +281,11 @@ class Shop extends Phaser.Scene {
 
         this.closedPhone.setVisible(false)
         this.shopContainer.setVisible(true)
+        this.shopScreen.setVisible(true)
 
         // Show labels ONLY after the scale animation completes
         this.tweens.add({
-            targets: this.shopContainer,
+            targets: [this.shopContainer, this.shopScreen],
             scaleX: 1,
             scaleY: 1,
             duration: 200,
@@ -264,7 +314,7 @@ class Shop extends Phaser.Scene {
         });
 
         this.tweens.add({
-            targets: this.shopContainer,
+            targets: [this.shopContainer, this.shopScreen],
             scaleX: 0,
             scaleY: 0,
             duration: 150,
@@ -274,6 +324,38 @@ class Shop extends Phaser.Scene {
                 this.closedPhone.setVisible(true)
             }
         })
+    }
+
+    scrollRight() {
+        if (this.scrollVal < 3 && !this.scrollTweens) {
+            console.log(this.scrollVal)
+            this.scrollVal++;
+            this.scrollTweens = this.tweens.add({
+                targets: [this.shopScreen],
+                x: '-=161',
+                duration: 400,
+                ease: "Cubic.easeInOut",
+                onComplete: () => {
+                    this.scrollTweens = null;
+                }
+            })
+
+        }
+    }
+
+    scrollLeft() {
+        if (this.scrollVal > 0 && !this.scrollTweens) {
+            this.scrollVal--;
+            this.scrollTweens = this.tweens.add({
+                targets: [this.shopScreen],
+                x: '+=161',
+                duration: 400,
+                ease: "Cubic.easeInOut",
+                onComplete: () => {
+                    this.scrollTweens = null;
+                }
+            })
+        }
     }
 
     //We can use this function to handle the logic for buying items
@@ -290,19 +372,18 @@ class Shop extends Phaser.Scene {
         // unlock the drug
         window.drugUnlocks[key] = true;
         const drugObject = this.drugs.find(d => d.id === key);
-        
-        if (drugObject){
+
+        if (drugObject) {
             this.DragSystemUI.buyDrug(drugObject);
             this.sound.play("Pay");
-        } else 
-        {
+        } else {
             console.log("none wtf")
         }
 
 
         // unlocked means gray
         if (icon) {
-            icon.clearTint();
+            icon.setTint(0x555555);
         }
 
         item.button.disableInteractive();

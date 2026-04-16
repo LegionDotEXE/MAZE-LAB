@@ -13,6 +13,8 @@ class TitleScreen extends Phaser.Scene {
 
         this.Maze = game.scene.getScene('mazeScene');
         this.Maze.scene.sleep();
+        this.Maze.mazeBGM.stop();
+        this.Maze.blackBGM.play();
 
         const { width, height } = this.cameras.main;
 
@@ -61,7 +63,9 @@ class TitleScreen extends Phaser.Scene {
             this.instructionsPanel.destroy();
             this.instructionsPanel = null;
         }
+        this.Maze.blackBGM.stop();
         this.scene.stop();
+        this.Maze.mazeBGM.play();
         this.Maze.scene.wake();
     }
 
