@@ -245,16 +245,16 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             case "hightrip": 
                 this.minCompleteMoney = 6;
                 this.maxCompleteMoney = 9;
-                this.thinkingTime = 500;
+                this.thinkingTime = 600;
                 this.healthDrainMultiplier = 1.5; 
                 break;
                 
                 case "highmeds": 
-                speedMultiplier *= 0.75;
+                speedMultiplier *= 0.70;
                 this.healMultiplier = 2;
                 this.thinkingTime = 0;
                 this.healthDrainMultiplier = 1.5;
-                this.maxCompleteMoney = 2;
+                this.maxCompleteMoney = 1;
                 this.minCompleteMoney = 2;
                 break;
                 
@@ -286,7 +286,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 
         // tile boost
         if (this.currentCombo === "highmeds" && this.onThinkingTile) {
-            speedMultiplier *= 10; 
+            speedMultiplier *= 7; 
         }
 
         // speed check
