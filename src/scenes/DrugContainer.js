@@ -11,7 +11,7 @@ class DrugContainer {
         this.occupied = false;
 
         this.rect = scene.add.rectangle(x, y, width, height, color, alpha)
-            .setStrokeStyle(1, 0xffffff)
+            //.setStrokeStyle(1, 0xffffff)
             .setInteractive();
     }
     // preload() {
