@@ -13,6 +13,7 @@ class GameComplete extends Phaser.Scene{
 
     preload() {
         this.load.audio("PoliceSiren", "../assets/audio/PoliceSiren.wav");
+        this.load.audio("BreakingDoor", "../assets/audio/BreakingDoor.flac");
     }
     
     EndGame(){
@@ -38,9 +39,18 @@ class GameComplete extends Phaser.Scene{
 
         this.tweens.add({
             targets: this.FBI,
-            volume: 0.7,
-            duration: 100000
+            volume: 0.5,
+            duration: 10000,
+            onComplete: () => {
+                this.time.delayedCall(3000, () => {
+                    this.sound.play("BreakingDoor", {
+                        volume: 0.8
+                    });
+                });
+            }
         });
+
+        
         this.tweens.add({
             targets: this.endScreen,
             duration: 10000,
