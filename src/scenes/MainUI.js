@@ -24,14 +24,27 @@ class MainUI extends Phaser.Scene {
         this.Maze = game.scene.getScene('mazeScene');
         this.gameManager = game.scene.getScene('GameManager');
 
-        // Temporary title text, you can remove it.
-        // Using temp title text to display money, thank you goat       
+        /*
         this.moneyUI = this.add.text(660, 20, 'Money:', {
             font: '24px Arial',
             fill: '#ffffff',
             stroke: '#000000',
             strokeThickness: 5
         });
+        */
+
+        // The Money Icon Sprite -- Added for testing
+        this.moneyIcon = this.add.sprite(675, 35, 'money_icon')
+            .setScale(0.15)            
+            .setDepth(10);
+
+        // 2. The Number Text (positioned slightly to the right of the icon)
+        this.moneyText = this.add.text(710, 20, '$0', {
+            font: '24px Arial',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 4
+        }).setDepth(10);
 
         this.createDrugPack();
         this.createPackSlots();
@@ -79,8 +92,9 @@ class MainUI extends Phaser.Scene {
 
     // For the purposes of updating the money - Ryle
     update() {
-        this.moneyUI.setText(`Money: $${this.gameManager.money}`);
+        // this.moneyUI.setText(`Money: $${this.gameManager.money}`);
 
+        this.moneyText.setText(`: $${this.gameManager.money}`);
     }
 
     createDrugPack() {
