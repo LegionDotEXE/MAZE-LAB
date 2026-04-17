@@ -38,7 +38,7 @@ class MainUI extends Phaser.Scene {
         this.createTargetBoxes();
         // hiding shop
         //this.createShop();
-
+        
         // Global input handling for dragging and dropping drugs
         this.bindGlobalInput();
 
@@ -52,6 +52,7 @@ class MainUI extends Phaser.Scene {
             // Force the input manager to drop whatever it's currently holding
             this.input.setDragState(this.input.activePointer, 0);
         });
+
     }
 
     initConfig() {
@@ -79,6 +80,7 @@ class MainUI extends Phaser.Scene {
     // For the purposes of updating the money - Ryle
     update() {
         this.moneyUI.setText(`Money: $${this.gameManager.money}`);
+
     }
 
     createDrugPack() {
@@ -188,7 +190,6 @@ class MainUI extends Phaser.Scene {
 
         drug.clearTint();
         this.selectedDrug = null;
-
     }
 
     createShop() {
