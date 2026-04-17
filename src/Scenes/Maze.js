@@ -96,11 +96,18 @@ class Maze extends Phaser.Scene {
         this.wallLayer = this.map.createLayer("MazeWalls", this.tileset, 0, 0);
 
         // Black Screen
-        const layerData = this.map.images.find(layer => layer.name === "BlankScreen");
-        this.blackScreen = this.map.createLayer("BlankScreen", this.tileset, 0, 0);
-        this.blackScreen = this.add.image(layerData.x, layerData.y, "blackScreen");
-        this.blackScreen.setOrigin(0, 0);
-        this.blackScreen.setVisible(false);
+        const blankLayer = this.map.getLayer("BlankScreen");
+        if (blankLayer) {
+            const layerData = this.map.images.find(layer => layer.name === "BlankScreen");
+            this.blackScreen = this.map.createLayer("BlankScreen", this.tileset, 0, 0);
+            if (layerData) {
+                this.blackScreen = this.add.image(layerData.x, layerData.y, "blackScreen");
+                this.blackScreen.setOrigin(0, 0);
+                this.blackScreen.setVisible(false);
+            }
+        } else {
+            this.blackScreen = this.add.container();
+        }
 
         // Camera settings
         // holy shit i should've found out that i could've changed the maze position using this earlier 
@@ -174,7 +181,6 @@ class Maze extends Phaser.Scene {
         // BGM setup
         this.mazeBGM = this.sound.add("MazeMusic", { loop: true, volume: 0.3 });
         this.blackBGM = this.sound.add("Static", { loop: true, volume: 5 });
-        this.mazeBGM.play();
 
     }
 
