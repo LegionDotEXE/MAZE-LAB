@@ -17,6 +17,9 @@ class Load extends Phaser.Scene{
         this.load.image("wire", "./images/Wire.png");
         this.load.image("drugSafe", "./images/DrugSafe.png");
 
+        // New addition: Money icon for UI
+        this.load.image("money_icon", "./images/money_icon.png");
+
         // lobster sprite
         this.load.image("Lobster", "./sprites/Lobster16.png");
         this.load.image("LobsterHigh", "./sprites/LobsterHigh.png");
