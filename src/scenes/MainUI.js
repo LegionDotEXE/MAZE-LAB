@@ -7,7 +7,7 @@ class MainUI extends Phaser.Scene {
         this.load.json('drugData', 'lib/Drugs.json');
         this.load.image('Drug1', 'assets/DrugT1.png');
         this.load.image('Drug2', 'assets/DrugT2.png');
-        
+
         this.load.image('high', 'assets/high.png');
         this.load.image('crack', 'assets/crack.png');
         this.load.image('trip', 'assets/trip.png');
@@ -41,6 +41,17 @@ class MainUI extends Phaser.Scene {
 
         // Global input handling for dragging and dropping drugs
         this.bindGlobalInput();
+
+        this.events.on('sleep', () => {
+            // Clear out the current selected drug just to be safe
+            if (this.selectedDrug) {
+                this.selectedDrug.clearTint();
+                this.selectedDrug = null;
+            }
+
+            // Force the input manager to drop whatever it's currently holding
+            this.input.setDragState(this.input.activePointer, 0);
+        });
     }
 
     initConfig() {
@@ -82,8 +93,8 @@ class MainUI extends Phaser.Scene {
             this.packHeight,
             0x333366
         )
-        .setOrigin(1, 1)
-        .setStrokeStyle(2, 0xffffff);
+            .setOrigin(1, 1)
+            .setStrokeStyle(2, 0xffffff);
 
         this.packStartX = this.drugPack.x - this.drugPack.width;
         this.packCenterY = this.drugPack.y - this.drugPack.height / 2;
@@ -104,23 +115,24 @@ class MainUI extends Phaser.Scene {
     createTargetBoxes() {
         // cordinates and size of target boxes
         this.targetBoxes = [
-            // x, y, width, height, color, alpha, bubble-enabled
-            new DrugContainer(this, 480, 100, 80, 80, 0x448844, 0, true),
-            new DrugContainer(this, 580, 100, 80, 80, 0x448844, 0.1, true)
+            // x, y, width, height, color, alpha
+            new DrugContainer(this, 480, 100, 80, 80, 0x448844, 0),
+            new DrugContainer(this, 580, 100, 80, 80, 0x448844, 0.1)
         ];
         //Delete later, this is just a more test 
-        this.add.image(460, 130,'IVBag').setDepth(-1)
-        this.add.image(560,130,'IVBag').setDepth(-1)
-        
+        this.add.image(460, 130, 'IVBag').setDepth(-1)
+        this.add.image(560, 130, 'IVBag').setDepth(-1)
+
 
         this.targetBoxes.forEach(container => {
+            // AI helped with drag and drop funcitonality
             container.rect.setInteractive();
-            container.rect.input.dropZone() = true;
-            container.rect.parentContainer = container;
+            container.rect.input.dropZone = true;
+            container.rect.parent = container;
 
             container.rect.on('pointerdown', () => {
                 if (!this.selectedDrug) {
-                    if (container.hasDrug()){
+                    if (container.hasDrug()) {
                         const emptySlot = this.getFirstEmptyContainer(this.drugSlots);
                         if (!emptySlot) {
                             this.showSlotFullMessage();
@@ -139,35 +151,43 @@ class MainUI extends Phaser.Scene {
                     }
                 }
 
-                const sourceContainer = this.getContainerBySprite(this.selectedDrug);
-                if (!sourceContainer || sourceContainer === container) return;
+                this.drugMovement(this.selectedDrug, container);
 
-                if (!container.hasDrug()) {
-                    container.setDrug(sourceContainer.drugData, sourceContainer.sprite);
-                    sourceContainer.clearDrug();
-                    container.sprite.disableInteractive();
-                } else {
-                    this.Maze.activeCharacter.activateDrugs(container.drugData.id);
-                    container.sprite.setInteractive({ useHandCursor: true });
-                    sourceContainer.sprite.setInteractive({ useHandCursor: true });
-                    sourceContainer.swapDrug(container);
-                    container.sprite.disableInteractive();
-                }
-                
-                this.Maze.activeCharacter.activateDrugs(container.drugData.id);
-
-                this.selectedDrug.clearTint();
-                this.selectedDrug = null;
             });
 
-            this.input.on('drop', (pointer, gameObject, dropZone) => {
-        // gameObject = the sprite being dragged
-        // dropZone = the container.rect it was dropped onto
-        
-        const targetContainer = dropZone.parentContainer;
-        this.processItemTransfer(gameObject, targetContainer);
-    });
+            this.input.on('drop', (pointer, drug, dropZone) => {
+                const targetContainer = dropZone.parent;
+                this.drugMovement(drug, targetContainer);
+            });
         });
+
+    }
+
+    //moved block of code into this function, nothing inside changed
+    drugMovement(drug, container) {
+        const sourceContainer = this.getContainerBySprite(drug);
+        if (!sourceContainer || sourceContainer === container) return;
+
+        if (!container.hasDrug()) {
+            container.setDrug(sourceContainer.drugData, sourceContainer.sprite);
+            sourceContainer.clearDrug();
+            this.time.delayedCall(10, () => {
+                container.sprite.disableInteractive();
+            });
+        } else {
+            this.Maze.activeCharacter.activateDrugs(container.drugData.id);
+            container.sprite.setInteractive({ useHandCursor: true });
+            sourceContainer.sprite.setInteractive({ useHandCursor: true });
+            sourceContainer.swapDrug(container);
+            this.time.delayedCall(10, () => {
+                container.sprite.disableInteractive();
+            });
+        }
+
+        this.Maze.activeCharacter.activateDrugs(container.drugData.id);
+
+        drug.clearTint();
+        this.selectedDrug = null;
 
     }
 
@@ -181,8 +201,8 @@ class MainUI extends Phaser.Scene {
             this.shopHeight,
             0x663333
         )
-        .setOrigin(0, 1)
-        .setStrokeStyle(2, 0xffffff);
+            .setOrigin(0, 1)
+            .setStrokeStyle(2, 0xffffff);
 
         const shopStartY = this.shop.y - this.shop.height;
         const shopCenterX = this.shop.x + this.shop.width / 2;
