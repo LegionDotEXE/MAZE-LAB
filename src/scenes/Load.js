@@ -10,7 +10,7 @@ class Load extends Phaser.Scene{
         this.load.image('buttonDown', './images/ButtonDown.png');
         this.load.image('buttonUp', './images/ButtonUp.png');
         this.load.image('blackScreen', './images/blackscreen4.png');
-        this.load.image('monitor', './images/Monitor.png');
+        this.load.image('monitor', './images/ComputerV2.png');
         this.load.image("phoneUp", "./images/PhoneUp.png");
         this.load.image("IVBag", "./images/IvBag.png");
         this.load.image("shadow", "./images/Shadow.png");
