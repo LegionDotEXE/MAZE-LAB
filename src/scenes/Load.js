@@ -71,6 +71,8 @@ class Load extends Phaser.Scene{
 
         //title screen logo
         this.load.image("title_logo", "title.png");
+        this.load.image("lightning", "lightning.png");
+        this.load.image("bubble", "bubble.png");
     }
 
     create(){

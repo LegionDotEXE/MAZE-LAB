@@ -14,7 +14,6 @@ class TitleScreen extends Phaser.Scene {
         this.Maze = game.scene.getScene('mazeScene');
         this.Maze.scene.sleep();
         this.Maze.mazeBGM.stop();
-        this.Maze.blackBGM.play();
 
         const { width, height } = this.cameras.main;
 
@@ -47,7 +46,17 @@ class TitleScreen extends Phaser.Scene {
         button.on('pointerover', () => button.setTint(0xdddddd));
         button.on('pointerout', () => button.clearTint());
         button.on('pointerdown', () => {
-            this.sound.play("Press");
+            const resumePromise = this.sound.context.state === 'running'
+                ? Promise.resolve()
+                : this.sound.context.resume();
+
+            resumePromise.then(() => {
+                if (!this.Maze.blackBGM.isPlaying) {
+                    this.Maze.blackBGM.play();
+                }
+                this.sound.play("Press");
+            });
+
             button.setTexture('buttonDown');
         });
         button.on('pointerup', () => {
@@ -63,10 +72,18 @@ class TitleScreen extends Phaser.Scene {
             this.instructionsPanel.destroy();
             this.instructionsPanel = null;
         }
-        this.sound.play("MazeScreenOn");
-        this.Maze.blackBGM.stop();
+
+        const resumePromise = this.sound.context.state === 'running'
+            ? Promise.resolve()
+            : this.sound.context.resume();
+
+        resumePromise.then(() => {
+            this.sound.play("MazeScreenOn");
+            this.Maze.blackBGM.stop();
+            this.Maze.mazeBGM.play();
+        });
+
         this.scene.stop();
-        this.Maze.mazeBGM.play();
         this.Maze.scene.wake();
     }
 
