@@ -243,8 +243,8 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
                 break;
 
             case "hightrip": 
-                this.minCompleteMoney = 6;
-                this.maxCompleteMoney = 9;
+                this.minCompleteMoney = 5;
+                this.maxCompleteMoney = 8;
                 this.thinkingTime = 600;
                 this.healthDrainMultiplier = 1.5; 
                 break;
