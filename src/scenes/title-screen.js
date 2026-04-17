@@ -110,7 +110,7 @@ class TitleScreen extends Phaser.Scene {
         }).setOrigin(0.5);
 
         const instructionsText = 
-            '• Click Play to begin the game.\n• Use the phone to purchase upgrades to make the lobster solve the maze faster.\n• Drag the upgrades into the IV bags to activate them.\n• The quicker the maze is solved, the more money is earned. \n• If the health bar depletes, the game is over. To avoid this, click the button as fast as possible. \n\nGood luck! ';
+            '• Click Play to begin the game.\n• Use the phone to purchase drugs.\n• Drag the drugs into the IV bags to activate them and combine them for special effects. \n• Be mindful of your battery usage. To avoid power outage, smash the button as fast as possible. \n\nGood luck! ';
 
         const content = this.add.text(panelX - panelWidth / 2 + 24, panelY - panelHeight / 2 + 90, instructionsText, {
             font: '18px Arial',

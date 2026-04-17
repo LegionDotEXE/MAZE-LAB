@@ -15,6 +15,7 @@ class Load extends Phaser.Scene{
         this.load.image("IVBag", "./images/IvBag.png");
         this.load.image("shadow", "./images/Shadow.png");
         this.load.image("wire", "./images/Wire.png");
+        this.load.image("drugSafe", "./images/DrugSafe.png");
 
         // New addition: Money icon for UI
         this.load.image("money_icon", "./images/money_icon.png");

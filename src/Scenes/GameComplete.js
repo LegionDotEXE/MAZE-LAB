@@ -14,6 +14,7 @@ class GameComplete extends Phaser.Scene{
     preload() {
         this.load.audio("PoliceSiren", "../assets/audio/PoliceSiren.wav");
         this.load.audio("BreakingDoor", "../assets/audio/BreakingDoor.flac");
+        
     }
     
     EndGame(){
@@ -25,7 +26,8 @@ class GameComplete extends Phaser.Scene{
         this.DragSystemUI.scene.stop();
         this.Shop.scene.stop();
         this.Maze.mazeBGM.stop();
-
+        this.registry.set('End', true);
+        
         this.sound.play("FNAFPowerOff");
 
         this.endScreen = this.add.rectangle(0, 0, width, height, 0x0b0b17, 1).setOrigin(0).setAlpha(0);

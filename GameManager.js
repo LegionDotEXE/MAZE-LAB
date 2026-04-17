@@ -14,6 +14,7 @@ class GameManager extends Phaser.Scene {
         this.add.sprite(390, 310, 'wire').setOrigin(0, 0).setDepth(10);
         this.add.sprite(390, 340, 'wire').setOrigin(0, 0).setAngle(30);
         this.add.sprite(0,50, 'monitor').setDepth(1).setOrigin(0,0)
+        this.add.sprite(436,392, 'drugSafe').setDepth(1).setOrigin(0,0)
 
         // drug unlocks
         window.drugUnlocks = {
