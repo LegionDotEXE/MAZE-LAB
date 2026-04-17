@@ -10,6 +10,10 @@ class GameComplete extends Phaser.Scene{
         this.MiniGame = this.scene.get('MiniGame');
         this.Shop = this.scene.get('ShopScene')
     }
+
+    preload() {
+        this.load.audio("PoliceSiren", "../assets/audio/PoliceSiren.wav");
+    }
     
     EndGame(){
         const { width, height } = this.cameras.main;
@@ -24,7 +28,19 @@ class GameComplete extends Phaser.Scene{
         this.sound.play("FNAFPowerOff");
 
         this.endScreen = this.add.rectangle(0, 0, width, height, 0x0b0b17, 1).setOrigin(0).setAlpha(0);
-        
+
+        this.FBI = this.sound.add("PoliceSiren", {
+            loop: true,
+            volume: 0
+        });
+
+        this.FBI.play();
+
+        this.tweens.add({
+            targets: this.FBI,
+            volume: 0.7,
+            duration: 100000
+        });
         this.tweens.add({
             targets: this.endScreen,
             duration: 10000,
