@@ -3,7 +3,7 @@ class GameManager extends Phaser.Scene {
         super('GameManager')
 
         // Initialize player stats
-        this.money = 0;
+        this.money = 1000;
         this.battery = 100;
     }
 

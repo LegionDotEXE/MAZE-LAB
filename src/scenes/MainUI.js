@@ -69,7 +69,7 @@ class MainUI extends Phaser.Scene {
     }
 
     initConfig() {
-        this.maxSlot = 4;
+        this.maxSlot = 5;
         this.slotSpacing = 100;
         this.slotPadding = 20;
         this.packHeight = 120;
@@ -107,10 +107,10 @@ class MainUI extends Phaser.Scene {
             cam.height,
             packWidth,
             this.packHeight,
-            0x333366
+            //0x333366
         )
             .setOrigin(1, 1)
-            .setStrokeStyle(2, 0xffffff);
+          //  .setStrokeStyle(2, 0xffffff);
 
         this.packStartX = this.drugPack.x - this.drugPack.width;
         this.packCenterY = this.drugPack.y - this.drugPack.height / 2;
