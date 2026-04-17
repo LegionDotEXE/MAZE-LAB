@@ -86,7 +86,7 @@ class Maze extends Phaser.Scene {
 
     create() {
         this.map = this.add.tilemap("TestingMaze", this.TILESIZE, this.TILESIZE, this.TILEHEIGHT, this.TILEWIDTH);
-
+        this.registry.set('lightsOff', false);
         // Add a tileset to the map
         //this.tileset = this.map.addTilesetImage("TESTING TILESET FOR MAZE", "maze_tiles");
         this.tileset = this.map.addTilesetImage("UpdatedTileset", "new_maze_tiles");
@@ -272,9 +272,13 @@ class Maze extends Phaser.Scene {
         
         this.sound.play("MazeScreenOff", {volume: 1.5});
         this.sound.play("FNAFPowerOff", {volume: 0.3});
+        this.registry.set('lightsOff', true);
+        console.log("lightsOff set to false in registry");
         this.mazeBGM.stop();
         this.blackBGM.play();
-        this.scene.sleep()
+        this.scene.sleep(); 
+
+        //follow mouse cursor with shadow
     }
     
     //this function is called by mini-game.js
@@ -285,6 +289,8 @@ class Maze extends Phaser.Scene {
         this.blackScreen.setVisible(false);
         this.scene.setVisible(true);
 
+        this.registry.set('lightsOff', false);
+        console.log("lightsOff set to true in registry");
         // show goal item
         this.goal.sprite.setVisible(true);
         this.mazeBGM.play();
