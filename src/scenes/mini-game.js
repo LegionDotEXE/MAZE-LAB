@@ -13,7 +13,7 @@ class MiniGame extends Phaser.Scene {
 
   create() {  
     this.Maze = game.scene.getScene('mazeScene');
-    this.button = this.add.sprite(700, 300, 'buttonUp').setDepth(0).setInteractive();
+    this.button = this.add.sprite(600, 300, 'buttonUp').setDepth(0).setInteractive();
     
     // lightning effect
     this.lightningEmitter = this.add.particles(0, 0, 'lightning', {
