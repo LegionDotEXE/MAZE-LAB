@@ -114,6 +114,10 @@ class MainUI extends Phaser.Scene {
         
 
         this.targetBoxes.forEach(container => {
+            container.rect.setInteractive();
+            container.rect.input.dropZone() = true;
+            container.rect.parentContainer = container;
+
             container.rect.on('pointerdown', () => {
                 if (!this.selectedDrug) {
                     if (container.hasDrug()){
@@ -155,6 +159,14 @@ class MainUI extends Phaser.Scene {
                 this.selectedDrug.clearTint();
                 this.selectedDrug = null;
             });
+
+            this.input.on('drop', (pointer, gameObject, dropZone) => {
+        // gameObject = the sprite being dragged
+        // dropZone = the container.rect it was dropped onto
+        
+        const targetContainer = dropZone.parentContainer;
+        this.processItemTransfer(gameObject, targetContainer);
+    });
         });
 
     }
