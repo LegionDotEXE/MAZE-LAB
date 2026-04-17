@@ -26,7 +26,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },        // Top-down architecture, as planned
-      debug: true
+      debug: false
     }
   },
   scale: {

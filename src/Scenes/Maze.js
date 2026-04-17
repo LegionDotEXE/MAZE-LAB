@@ -114,12 +114,12 @@ class Maze extends Phaser.Scene {
         //let walkables = [18, 36, 0, 370]; //old walkables for old tilset
         
         //401: BLACK TILES | 403: GOAL TILES | 402: THINKING TILES | 0: EMPTY TILES (just in case)
-        let walkables = [401, 403, 0, 402];
+        this.walkables = [401, 403, 0, 402];
 
         this.finder = new EasyStar.js();
         this.finder.setGrid(tinyTownGrid);
 
-        this.finder.setAcceptableTiles(walkables);
+        this.finder.setAcceptableTiles(this.walkables);
 
         this.pointMap = new Map()
         let pointMapIndex = 0;
@@ -177,6 +177,17 @@ class Maze extends Phaser.Scene {
         this.mazeBGM.play();
 
     }
+
+    wallBreak(){
+        this.walkables = [401, 403, 402, 404]; //404 is the walls
+        this.finder.setAcceptableTiles(this.walkables);
+    }
+
+    exitWallBreak(){
+        this.walkables = [401, 403, 402];
+        this.finder.setAcceptableTiles(this.walkables);
+    }
+
 
     tileXtoWorld(tileX) {
         return tileX * this.TILESIZE;
@@ -258,10 +269,11 @@ class Maze extends Phaser.Scene {
         //And they are not moving. Right now there is no issues but could be an issue if other functionality is added
         //to the moving state while it's active
         this.activeCharacter.statemachine.transition("Thinking");
+        
+        this.sound.play("MazeScreenOff", {volume: 1.5});
+        this.sound.play("FNAFPowerOff", {volume: 0.3});
         this.registry.set('lightsOff', true);
         console.log("lightsOff set to false in registry");
-        this.sound.play("MazeScreenOff");
-        this.sound.play("FNAFPowerOff");
         this.mazeBGM.stop();
         this.blackBGM.play();
         this.scene.sleep(); 
@@ -299,7 +311,7 @@ class Maze extends Phaser.Scene {
     async TileEffecthandler(player, tile) {
         if (tile.properties.GOAL) {
             console.log("reached goal");
-            this.gameManager.money += this.activeCharacter.completeMoney;
+            this.gameManager.money += this.activeCharacter.getRandomNumber(this.activeCharacter.minCompleteMoney, this.activeCharacter.maxCompleteMoney);
             console.log(this.gameManager.money);
             this.sound.play("GetMoney");
             //resets to starting location
