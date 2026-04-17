@@ -13,7 +13,7 @@ class MiniGame extends Phaser.Scene {
 
   create() {  
     this.Maze = game.scene.getScene('mazeScene');
-    this.button = this.add.sprite(700, 300, 'buttonUp').setInteractive();
+    this.button = this.add.sprite(600, 300, 'buttonUp').setInteractive();
     this.healAmount = 5;
 
     this.button.on('pointerdown', () => {

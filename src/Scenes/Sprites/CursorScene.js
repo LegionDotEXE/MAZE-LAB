@@ -19,12 +19,15 @@ class CursorScene extends Phaser.Scene {
 
         // Create cursor image
         this.cursor = this.add.image(0, 0, 'cursorDefault');
-
+        this.shadow = this.add.image(0, 0, 'shadow').setAlpha(0.5).setDepth(100); // Add shadow image behind cursor
         //I know its ugly as fuck and hard coded, my bad. Its so the mouse feels right
         this.cursor.setOrigin(0.62, 0.01);   
 
         // Keep this scene from pausing accidentally
         this.scene.setVisible(true);
+
+        let lightsOff = this.registry.get('lightsOff');
+        console.log('Initial lightsOff:', lightsOff);
 
         // Change to pressed texture
         this.input.on('pointerdown', () => {
@@ -35,6 +38,7 @@ class CursorScene extends Phaser.Scene {
         this.input.on('pointerup', () => {
             this.cursor.setTexture('cursorDefault');
         });
+
     }
 
     update() {
@@ -43,6 +47,16 @@ class CursorScene extends Phaser.Scene {
         this.cursor.x = pointer.x;
         this.cursor.y = pointer.y;
 
+        if (this.registry.get('lightsOff')) {
+            // Follow the cursor when the lights are off
+            console.log("lights are off");
+            this.shadow.x = pointer.x;
+            this.shadow.y = pointer.y;
+            this.shadow.setAlpha(0.8); // Make shadow visible
+        }else{  
+            console.log("lights are on");
+            this.shadow.setAlpha(0); // Hide shadow
+        }
         // Safety: keep this scene above everything
         this.scene.bringToTop();
     }
