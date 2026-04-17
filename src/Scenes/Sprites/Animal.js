@@ -128,6 +128,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             return;
         }
 
+        this.miniGame.sound.play("DrugActivate");
         // toggle on
         drug.active = true;
         console.log(`${key} on`)
@@ -214,26 +215,27 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         switch (this.currentCombo) {
 
             case "crackhigh": 
-                this.thinkingTime = 400;
-                speedMultiplier *= 1.1;
+                this.thinkingTime = 100;
+                speedMultiplier *= 3;
+                this.healthDrainMultiplier = 3; 
                     
                 break;
 
             case "hightrip": 
-                this.completeMoney = 3;
-                this.thinkingTime = 0;
+                this.completeMoney = 5;
+                this.thinkingTime = 250;
                 this.healthDrainMultiplier = 2; 
                 break;
 
             case "highmeds": 
-                speedMultiplier *= 0.5;
-                this.healMultiplier = 2;
+                speedMultiplier *= 0.35;
+                this.healMultiplier = 4;
                 this.thinkingTime = 0;
                 this.healthDrainMultiplier = 2;
                 break;
 
             case "cracktrip": 
-                speedMultiplier *= 1;
+                speedMultiplier *= 1.5;
                 this.completeMoney = 5;
                 this.healthDrainMultiplier = 2;
                 // if we are able to implement wall breaking, here
@@ -243,7 +245,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
 
             case "crackmeds": 
                 speedMultiplier *= 4;
-                this.healMultiplier = 2;
+                this.healMultiplier = 1.5;
                 this.healthDrainMultiplier = 4;
                 break;
 

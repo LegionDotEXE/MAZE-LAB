@@ -173,7 +173,7 @@ class Maze extends Phaser.Scene {
 
         // BGM setup
         this.mazeBGM = this.sound.add("MazeMusic", { loop: true, volume: 0.3 });
-        this.blackBGM = this.sound.add("Static", { loop: true, volume: 1 });
+        this.blackBGM = this.sound.add("Static", { loop: true, volume: 5 });
         this.mazeBGM.play();
 
     }
@@ -259,6 +259,8 @@ class Maze extends Phaser.Scene {
         //to the moving state while it's active
         this.activeCharacter.statemachine.transition("Thinking");
         
+        this.sound.play("MazeScreenOff");
+        this.sound.play("FNAFPowerOff");
         this.mazeBGM.stop();
         this.blackBGM.play();
         this.scene.sleep()
@@ -266,6 +268,7 @@ class Maze extends Phaser.Scene {
     
     //this function is called by mini-game.js
     showScreen() {
+        this.sound.play("MazeScreenOn");
         this.scene.wake();
         this.activeCharacter.setVisible(true);
         this.blackScreen.setVisible(false);
@@ -293,6 +296,7 @@ class Maze extends Phaser.Scene {
             console.log("reached goal");
             this.gameManager.money += this.activeCharacter.completeMoney;
             console.log(this.gameManager.money);
+            this.sound.play("GetMoney");
             //resets to starting location
             this.resetCharacter(player)
         }

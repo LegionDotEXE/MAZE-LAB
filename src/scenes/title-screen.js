@@ -63,6 +63,7 @@ class TitleScreen extends Phaser.Scene {
             this.instructionsPanel.destroy();
             this.instructionsPanel = null;
         }
+        this.sound.play("MazeScreenOn");
         this.Maze.blackBGM.stop();
         this.scene.stop();
         this.Maze.mazeBGM.play();

@@ -36,6 +36,7 @@ class Load extends Phaser.Scene{
         this.load.image("trip", "trip.png");
         this.load.image("Ptrip", "Ptrip.png");
         this.load.image("meds", "meds.png");
+        this.load.image("final", "FinalDrug.png");
 
         // sound effects
         this.load.audio("PhoneOpen", "./audio/iphoneUnlock.mp3");
@@ -45,6 +46,12 @@ class Load extends Phaser.Scene{
         this.load.audio("Drag", "./audio/Clinking.mp3");
         this.load.audio("MazeMusic", "./audio/ethicsPendingBGM.wav");
         this.load.audio("Static", "./audio/static.mp3");
+        this.load.audio("GetMoney", "./audio/Smoney.wav");
+        this.load.audio("MazeScreenOn", "./audio/Sscreenon.wav");
+        this.load.audio("MazeScreenOff", "./audio/Sscreenoff.wav");
+        this.load.audio("BuyDrug", "./audio/Sbuydrug.wav");
+        this.load.audio("DrugActivate", "./audio/Sdrugup.wav");
+        this.load.audio("FNAFPowerOff", "./audio/FNAFPowerOff.mp3");
 
         // goal item
         this.load.image("goal", "Tfruit.png");
@@ -76,6 +83,7 @@ class Load extends Phaser.Scene{
         this.scene.launch('TitleScreen');
         this.scene.launch('CursorScene');
         this.scene.launch('MessageUI');
+        this.scene.launch('GameComplete');
         this.scene.bringToTop('CursorScene');
         
         this.scene.moveAbove('ShopScene', 'mainUI') //moves the maze scene to be below the shop scene

@@ -20,7 +20,8 @@ class Shop extends Phaser.Scene {
         this.load.image('crack', 'assets/crack.png');
         this.load.image('trip', 'assets/trip.png');
         this.load.image('meds', 'assets/meds.png');
-
+        this.load.image('final', 'assets/FinalDrug.png');
+        
         // Added this line here to fix phone layering issue
         this.scene.bringToTop('ShopScene');
 
@@ -31,6 +32,7 @@ class Shop extends Phaser.Scene {
         this.DragSystemUI = game.scene.getScene('MainUI');
         this.MessageUI = game.scene.getScene('MessageUI');
         this.gameManager = game.scene.getScene('GameManager');
+        this.EndGame = game.scene.getScene('GameComplete');
 
         this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
 
@@ -181,7 +183,8 @@ class Shop extends Phaser.Scene {
             { key: "high", icon: "high", x: phoneX - 65, y: phoneY - 145, price: 9},
             { key: "crack", icon: "crack", x: phoneX + 95, y: phoneY - 145, price: 32},
             { key: "trip", icon: "trip", x: phoneX + 255, y: phoneY - 145, price: 21},
-            { key: "meds", icon: "meds", x: phoneX + 415, y: phoneY - 145, price: 4}
+            { key: "meds", icon: "meds", x: phoneX + 415, y: phoneY - 145, price: 4},
+            { key: "miracle!!!", icon: "final", x: phoneX + 575, y: phoneY - 145, price: 99}
         ];
         /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
         { label: "Upgrade 2", x: phoneX + 40, y: phoneY - 50 },
@@ -349,7 +352,7 @@ class Shop extends Phaser.Scene {
     }
 
     scrollRight() {
-        if (this.scrollVal < 3 && !this.scrollTweens) {
+        if (this.scrollVal < 4 && !this.scrollTweens) {
             console.log(this.scrollVal)
             this.scrollVal++;
             this.scrollTweens = this.tweens.add({
@@ -389,6 +392,11 @@ class Shop extends Phaser.Scene {
         if (item.bought) return;
         if (key === "none") return;
 
+        if (key === "miracle!!!"){
+            this.sound.play("Pay");
+            this.EndGame.EndGame();
+            return;
+        }
         item.bought = true;
 
         // unlock the drug
