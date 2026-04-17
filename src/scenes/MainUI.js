@@ -132,8 +132,8 @@ class MainUI extends Phaser.Scene {
         // cordinates and size of target boxes
         this.targetBoxes = [
             // x, y, width, height, color, alpha
-            new DrugContainer(this, 480, 100, 80, 80, 0x448844, 0),
-            new DrugContainer(this, 580, 100, 80, 80, 0x448844, 0.1)
+            new DrugContainer(this, 480, 100, 80, 80, 0x448844, 0, 1),
+            new DrugContainer(this, 580, 100, 80, 80, 0x448844, 0.1, 1)
         ];
         //Delete later, this is just a more test 
         this.add.image(460, 130, 'IVBag').setDepth(-1)

@@ -180,9 +180,9 @@ class Shop extends Phaser.Scene {
         //Might change this layout to just be in a column but for now this is fine for testing purposes
         const buttonData = [
             { key: "high", icon: "high", x: phoneX - 65, y: phoneY - 145, price: 1},
-            { key: "crack", icon: "crack", x: phoneX + 95, y: phoneY - 145, price: 400},
+            { key: "crack", icon: "crack", x: phoneX + 415, y: phoneY - 145, price: 400},
             { key: "trip", icon: "trip", x: phoneX + 255, y: phoneY - 145, price: 400},
-            { key: "meds", icon: "meds", x: phoneX + 415, y: phoneY - 145, price: 10},
+            { key: "meds", icon: "meds", x: phoneX + 95, y: phoneY - 145, price: 10},
             { key: "miracle!!!", icon: "final", x: phoneX + 575, y: phoneY - 145, price:999 }
         ];
         /*{ label: "Upgrade 1", x: phoneX - 40, y: phoneY - 50 },
