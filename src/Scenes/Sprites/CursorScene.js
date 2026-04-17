@@ -8,6 +8,7 @@ class CursorScene extends Phaser.Scene {
         //Cursor images
         this.load.image('cursorDefault', './assets/images/cursor/CursorIdle.png');
         this.load.image('cursorPress', './assets/images/cursor/CursorPressed.png');
+        this.load.image('cursorEnd', './assets/images/cursor/CursorEnd.png');
     }
 
     create() {
@@ -56,6 +57,10 @@ class CursorScene extends Phaser.Scene {
         }else{  
             console.log("lights are on");
             this.shadow.setAlpha(0); // Hide shadow
+        }
+
+        if (this.registry.get('End')) {
+            this.cursor.setTexture('cursorEnd');
         }
         // Safety: keep this scene above everything
         this.scene.bringToTop();

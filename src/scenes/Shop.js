@@ -12,7 +12,7 @@ class Shop extends Phaser.Scene {
         //this.cameras.main.setBackgroundColor("#2b2b2b")
         //this.load.json('drugData', 'lib/Drugs.json');
         this.drugs = this.cache.json.get('drugData');
-
+        this.registry.set('End', false);
         console.log(this.drugs)
 
         this.load.image('high', 'assets/high.png');
