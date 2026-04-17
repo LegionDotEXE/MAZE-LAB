@@ -212,15 +212,20 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
             switch (drug.key) {
                 case "high":
                     this.thinkingTime = 1100;
+                    speedMultiplier *= 1.75;
+                    this.maxCompleteMoney = 5;
+                    this.minCompleteMoney = 3;
                     break;
 
                 case "crack":
                     speedMultiplier *= 3;
+                    this.maxCompleteMoney = 3;
+                    this.minCompleteMoney = 10;
                     break;
 
                 case "trip":
-                    this.maxCompleteMoney = 3;
-                    this.minCompleteMoney = 6;
+                    this.maxCompleteMoney = 15;
+                    this.minCompleteMoney = 30;
                     break;
 
                 case "meds":
@@ -236,15 +241,16 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         switch (this.currentCombo) {
 
             case "crackhigh": 
-                this.minCompleteMoney = 2;
+                this.minCompleteMoney = 10;
+                this.maxCompleteMoney = 70;
                 this.thinkingTime = 100;
                 speedMultiplier *= 4;
                 this.healthDrainMultiplier = 4; 
                 break;
 
             case "hightrip": 
-                this.minCompleteMoney = 5;
-                this.maxCompleteMoney = 8;
+                this.minCompleteMoney = 50;
+                this.maxCompleteMoney = 80;
                 this.thinkingTime = 600;
                 this.healthDrainMultiplier = 1.5; 
                 break;
@@ -254,14 +260,14 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
                 this.healMultiplier = 2;
                 this.thinkingTime = 0;
                 this.healthDrainMultiplier = 1.5;
-                this.maxCompleteMoney = 1;
-                this.minCompleteMoney = 2;
+                this.maxCompleteMoney = 60;
+                this.minCompleteMoney = 80;
                 break;
                 
                 case "cracktrip": 
                 speedMultiplier *= 2.5;
                 this.minCompleteMoney = 0;
-                this.maxCompleteMoney = 4;
+                this.maxCompleteMoney = 100;
                 this.healthDrainMultiplier = 2.5;
                 this.wallbreak = true;
                 this.Maze.wallBreak();
@@ -272,12 +278,14 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
                 this.healMultiplier = 2;
                 this.healthDrainMultiplier = 1.25;
                 this.thinkingTime = 250;
+                this.minCompleteMoney = 40;
+                this.maxCompleteMoney = 60;
                 break;
 
             case "medstrip": 
                 speedMultiplier *= 0.20;
-                this.maxCompleteMoney = 15;
-                this.minCompleteMoney = 25;
+                this.maxCompleteMoney = 150;
+                this.minCompleteMoney = 250;
                 this.healMultiplier = 5;
                 this.thinkingTime = 0;
                 this.healthDrainMultiplier = 0.50;
