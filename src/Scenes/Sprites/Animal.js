@@ -1,6 +1,7 @@
 class Animal extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame, map) {
         super(scene, x, y, texture, frame);
+        this.Maze = scene.scene.get('mazeScene');
         this.miniGame = scene.scene.get('MiniGame');
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -9,7 +10,9 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.baseStats = {
             speed: 600,
             thinkingTime: 2000,
-            completeMoney: 1
+            maxCompleteMoney:  1, // random number betw
+            minCompleteMoney:  3, // random number betw
+            wallbreak: false
         }; 
 
         // sprites
@@ -103,6 +106,9 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    getRandomNumber(min, max){
+        return Math.floor(Math.random() * (max - min) ) + min;
+    }
     // update speed stats during set tween pathing
     updateTweenSpeed() {
         if (!this.activeTweens) return;
@@ -139,6 +145,16 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
     // deactivate drugs
     deactivateDrugs(drug) {
         drug.active = false;
+
+        // deactivate wallbreak when crack or trip is removed from the combo (i dont know a better way)
+        if (drug.key == "crack" || drug.key == "trip"){
+            console.log(drug)
+            if (this.wallbreak){
+                this.Maze.exitWallBreak();
+                this.wallbreak = false;
+                console.log(this.wallbreak)
+            }
+        }
 
         // specify drug
         this.activeDrugs = this.activeDrugs.filter(d => d !== drug);
@@ -181,7 +197,9 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.healthDrainMultiplier = 1;
         this.speed = this.baseStats.speed;
         this.thinkingTime = this.baseStats.thinkingTime;
-        this.completeMoney = this.baseStats.completeMoney;
+        this.maxCompleteMoney = this.baseStats.maxCompleteMoney;
+        this.minCompleteMoney = this.baseStats.minCompleteMoney;
+        this.wallbreak = this.baseStats.wallbreak;
         this.healMultiplier = 1;
         let speedMultiplier = 1;
 
@@ -193,7 +211,7 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
         this.activeDrugs.forEach(drug => {
             switch (drug.key) {
                 case "high":
-                    this.thinkingTime = 500;
+                    this.thinkingTime = 1100;
                     break;
 
                 case "crack":
@@ -201,58 +219,68 @@ class Animal extends Phaser.Physics.Arcade.Sprite {
                     break;
 
                 case "trip":
-                    this.completeMoney = 3;
+                    this.maxCompleteMoney = 3;
+                    this.minCompleteMoney = 6;
                     break;
 
                 case "meds":
-                    speedMultiplier *= 0.5;
-                    this.healMultiplier = 2;
+                    speedMultiplier *= 0.85;
+                    this.healMultiplier = 3;
+                    this.maxCompleteMoney = 2;
+                    this.minCompleteMoney = 2;
                     break;
-            }
-        });
+                }
+            });
 
         // combo effects
         switch (this.currentCombo) {
 
             case "crackhigh": 
+                this.minCompleteMoney = 2;
                 this.thinkingTime = 100;
-                speedMultiplier *= 3;
-                this.healthDrainMultiplier = 3; 
-                    
+                speedMultiplier *= 4;
+                this.healthDrainMultiplier = 4; 
                 break;
 
             case "hightrip": 
-                this.completeMoney = 5;
-                this.thinkingTime = 250;
-                this.healthDrainMultiplier = 2; 
+                this.minCompleteMoney = 6;
+                this.maxCompleteMoney = 9;
+                this.thinkingTime = 500;
+                this.healthDrainMultiplier = 1.5; 
                 break;
-
-            case "highmeds": 
-                speedMultiplier *= 0.35;
-                this.healMultiplier = 4;
+                
+                case "highmeds": 
+                speedMultiplier *= 0.75;
+                this.healMultiplier = 2;
                 this.thinkingTime = 0;
-                this.healthDrainMultiplier = 2;
+                this.healthDrainMultiplier = 1.5;
+                this.maxCompleteMoney = 2;
+                this.minCompleteMoney = 2;
                 break;
-
-            case "cracktrip": 
-                speedMultiplier *= 1.5;
-                this.completeMoney = 5;
-                this.healthDrainMultiplier = 2;
-                // if we are able to implement wall breaking, here
-                // this could also be the cracked guy with insane HP drain
-
+                
+                case "cracktrip": 
+                speedMultiplier *= 2.5;
+                this.minCompleteMoney = 0;
+                this.maxCompleteMoney = 4;
+                this.healthDrainMultiplier = 2.5;
+                this.wallbreak = true;
+                this.Maze.wallBreak();
                 break;
-
-            case "crackmeds": 
-                speedMultiplier *= 4;
-                this.healMultiplier = 1.5;
-                this.healthDrainMultiplier = 4;
+                
+                case "crackmeds": 
+                speedMultiplier *= 2;
+                this.healMultiplier = 2;
+                this.healthDrainMultiplier = 1.25;
+                this.thinkingTime = 250;
                 break;
 
             case "medstrip": 
-                speedMultiplier *= 0.5;
-                this.completeMoney = 15; 
-                this.healMultiplier = 3;
+                speedMultiplier *= 0.20;
+                this.maxCompleteMoney = 15;
+                this.minCompleteMoney = 25;
+                this.healMultiplier = 5;
+                this.thinkingTime = 0;
+                this.healthDrainMultiplier = 0.50;
                 break;
         }
 
