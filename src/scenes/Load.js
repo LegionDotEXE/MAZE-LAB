@@ -48,7 +48,7 @@ class Load extends Phaser.Scene{
         this.load.audio("PhoneOpen", "./audio/iphoneUnlock.mp3");
         this.load.audio("Pay", "./audio/iphonePay.mp3");
         this.load.audio("PhoneClose", "./audio/iphoneLock.mp3");
-        this.load.audio("Press", "./audio/ButtonPress.mp3");
+        this.load.audio("Press", "./audio/buttonPress.mp3");
         this.load.audio("Drag", "./audio/Clinking.mp3");
         this.load.audio("MazeMusic", "./audio/ethicsPendingBGM.wav");
         this.load.audio("Static", "./audio/static.mp3");

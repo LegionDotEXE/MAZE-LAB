@@ -12,8 +12,10 @@ class GameComplete extends Phaser.Scene{
     }
 
     preload() {
-        this.load.audio("PoliceSiren", "../assets/audio/PoliceSiren.wav");
-        this.load.audio("BreakingDoor", "../assets/audio/BreakingDoor.flac");
+        this.load.setPath("./assets/")
+
+        this.load.audio("PoliceSiren", "./audio/PoliceSiren.wav");
+        this.load.audio("BreakingDoor", "./audio/BreakingDoor.flac");
         
     }
     
