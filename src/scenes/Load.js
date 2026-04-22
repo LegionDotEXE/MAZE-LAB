@@ -33,6 +33,8 @@ class Load extends Phaser.Scene{
         this.load.image("LobsterCM", "./sprites/LobsterCM.png");
         this.load.image("LobsterTM", "./sprites/LobsterTM.png");
         
+        this.load.audio("PoliceSiren", "./audio/PoliceSiren.wav");
+        this.load.audio("BreakingDoor", "./audio/BreakingDoor.flac");
 
         // drug icons
         this.load.image("high", "high.png");
